@@ -30,6 +30,7 @@ LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 //--------------------------------------------------------------------------------------
 HRESULT Application::InitWindow( HINSTANCE _hInstance, int _nCmdShow )
 {
+	//test
     // Register class
     WNDCLASSEX wcex;
     wcex.cbSize = sizeof( WNDCLASSEX );
