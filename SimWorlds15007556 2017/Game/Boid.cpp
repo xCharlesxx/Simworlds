@@ -18,6 +18,10 @@ Boid::~Boid()
 	//tidy up anything I've created
 }
 
+void Boid::Spawn()
+{
+
+}
 
 void Boid::Tick(GameData* _GD)
 {
