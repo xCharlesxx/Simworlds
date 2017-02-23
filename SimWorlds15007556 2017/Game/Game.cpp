@@ -49,6 +49,7 @@ Game::Game(ID3D11Device* _pd3dDevice, HWND _hWnd, HINSTANCE _hInstance)
 	hr = m_pMouse->SetDataFormat(&c_dfDIMouse);
 	hr = m_pMouse->SetCooperativeLevel(m_hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
 
+
 	//create GameData struct and populate its pointers
 	m_GD = new GameData;
 	m_GD->m_keyboardState = m_keyboardState;
@@ -91,6 +92,9 @@ Game::Game(ID3D11Device* _pd3dDevice, HWND _hWnd, HINSTANCE _hInstance)
 	//add Player
 	Player* pPlayer = new Player("BirdModelV1.cmo", _pd3dDevice, m_fxFactory);
 	m_GameObjects.push_back(pPlayer);
+
+	//add Boid 
+	
 
 	//add a secondary camera
 	m_TPScam = new TPSCamera(0.25f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 10.0f, 50.0f));
