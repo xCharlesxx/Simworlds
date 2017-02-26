@@ -163,15 +163,15 @@ Game::Game(ID3D11Device* _pd3dDevice, HWND _hWnd, HINSTANCE _hInstance)
 	m_GameObjects.push_back(VBMC);
 
 
-	//example basic 2D stuff
-	ImageGO2D* logo = new ImageGO2D("logo_small", _pd3dDevice);
-	logo->SetPos(200.0f * Vector2::One);
-	m_GameObject2Ds.push_back(logo);
+	////example basic 2D stuff
+	//ImageGO2D* logo = new ImageGO2D("logo_small", _pd3dDevice);
+	//logo->SetPos(200.0f * Vector2::One);
+	//m_GameObject2Ds.push_back(logo);
 
-	TextGO2D* text = new TextGO2D("Test Text");
+	/*TextGO2D* text = new TextGO2D("Test Text");
 	text->SetPos(Vector2(100, 10));
 	text->SetColour(Color((float*)&Colors::Yellow));
-	m_GameObject2Ds.push_back(text);
+	m_GameObject2Ds.push_back(text);*/
 };
 
 

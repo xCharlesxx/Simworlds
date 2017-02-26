@@ -14,9 +14,11 @@ public:
 	~BoidManager();
 
 	virtual void Tick(GameData* _GD) override;
-
+	void UpdateBoidPos();
+	void InitialiseBoidPos(); 
+	void SpawnBoid(); 
 protected:
-
+	IEffectFactory* m_fxFactory;
 };
 
 #endif
