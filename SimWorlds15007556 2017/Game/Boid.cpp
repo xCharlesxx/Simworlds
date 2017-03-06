@@ -4,13 +4,7 @@
 
 Boid::Boid(string _fileName, ID3D11Device* _pd3dDevice, IEffectFactory* _EF) : CMOGO(_fileName, _pd3dDevice, _EF)
 {
-	//any special set up for Player goes here
-	m_fudge = Matrix::CreateRotationY(XM_PI);
-
-	m_pos.y = 10.0f;
-
-	SetDrag(0.7);
-	SetPhysicsOn(true);
+	m_pos = Vector3(0, 0, 0);
 }
 
 Boid::~Boid()
@@ -18,9 +12,9 @@ Boid::~Boid()
 	//tidy up anything I've created
 }
 
-void Boid::Spawn()
+void Boid::Update()
 {
-//	_pd3dDevice = _pd3dDevice;
+
 }
 
 void Boid::Tick(GameData* _GD)

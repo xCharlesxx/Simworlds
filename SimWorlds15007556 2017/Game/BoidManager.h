@@ -1,10 +1,11 @@
 #pragma once 
 #include "CMOGO.h"
 #include <vector>
-//=================================================================
-//Base Player Class (i.e. a GO the player controls)
-//=================================================================
-class boid;
+
+class Boid;
+struct GameData; 
+struct DrawData; 
+
 class BoidManager
 {
 
@@ -12,14 +13,17 @@ public:
 	BoidManager(string _fileName, ID3D11Device* _pd3dDevice, IEffectFactory* _EF);
 	~BoidManager();
 
-	void Tick(GameData* _GD);
-	void UpdateBoidPos();
+	void Tick(GameData* _GD, DrawData* _DD);
+	void UpdateBoidPos(DrawData* _DD);
 	void InitialiseBoidPos(); 
-	void SpawnBoid(); 
-	//virtual void Draw(DrawData* _DD) override;
+	void DrawBoids(DrawData* _DD);
+	void SpawnBoid();
+	
 protected:
 	IEffectFactory* m_fxFactory;
 	ID3D11Device* m_pd3dDevice;
 	string m_fileName; 
-	vector<boid> boids; 
+	vector<Boid*> boids; 
+	int prevSize = 0;
+	const int boidPool = 200; 
 };

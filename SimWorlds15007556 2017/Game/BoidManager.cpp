@@ -2,12 +2,16 @@
 #include <dinput.h>
 #include "GameData.h"
 #include "Boid.h"
+#include "DrawData.h"
+#include <iostream>
 
 BoidManager::BoidManager(string _fileName, ID3D11Device* _pd3dDevice, IEffectFactory* _EF)
 {
 	m_fxFactory = _EF; 
 	m_pd3dDevice = _pd3dDevice; 
 	m_fileName = _fileName; 
+	boids.reserve(boidPool); 
+
 }
 
 BoidManager::~BoidManager()
@@ -18,29 +22,46 @@ BoidManager::~BoidManager()
 void BoidManager::SpawnBoid()
 {
 	Boid* boid = new Boid(m_fileName, m_pd3dDevice, m_fxFactory);
+	boids.push_back(boid); 
 }
-
-//void BoidManager::Draw(DrawData* _DD)
-//{
-//
-//}
 
 void BoidManager::InitialiseBoidPos()
 {
 	//Draw boids 
-	UpdateBoidPos();
+	//UpdateBoidPos();
 }
 
-void BoidManager::UpdateBoidPos()
+void BoidManager::UpdateBoidPos(DrawData* _DD)
 {
-	for (std::vector<boid>::iterator it = boids.begin(); it != boids.end(); ++it)
+	string output = ""; 
+	for (int i = 0; i < boids.size(); ++i)
 	{
-
+		boids[i]->Update(); 
+		boids[i]->Draw(_DD); 
+		cout << "Update and Drawing boid ";
+		cout << i;
+		cout << "\n";
+	}
+	output = "Updated and Drawn ";
+	output += boids.size();
+	output += " boids\n";
+	if (prevSize != boids.size())
+	{
+		cout << output;
+		prevSize = boids.size();
 	}
 }
 
-void BoidManager::Tick(GameData* _GD)
+void BoidManager::DrawBoids(DrawData* _DD)
 {
-	UpdateBoidPos(); 
+	for (int i = 0; i < boids.size(); ++i)
+	{
+		boids[i]->Draw(_DD);
+	}
+}
+void BoidManager::Tick(GameData* _GD, DrawData* _DD)
+{
+	UpdateBoidPos(_DD); 
+	//DrawBoids(_DD); 
 	//apply my base behaviour
 }

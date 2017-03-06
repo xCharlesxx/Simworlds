@@ -301,7 +301,7 @@ void Game::PlayTick()
 	{
 		(*it)->Tick(m_GD);
 	}
-	m_boidManager->Tick(m_GD); 
+	m_boidManager->Tick(m_GD, m_DD); 
 }
 
 void Game::Draw(ID3D11DeviceContext* _pd3dImmediateContext) 
