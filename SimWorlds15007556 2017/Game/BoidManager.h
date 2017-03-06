@@ -1,24 +1,25 @@
-#ifndef _PLAYER_H_
-#define _PLAYER_H_
+#pragma once 
 #include "CMOGO.h"
-
+#include <vector>
 //=================================================================
 //Base Player Class (i.e. a GO the player controls)
 //=================================================================
-
-class BoidManager : public CMOGO
+class boid;
+class BoidManager
 {
 
 public:
 	BoidManager(string _fileName, ID3D11Device* _pd3dDevice, IEffectFactory* _EF);
 	~BoidManager();
 
-	virtual void Tick(GameData* _GD) override;
+	void Tick(GameData* _GD);
 	void UpdateBoidPos();
 	void InitialiseBoidPos(); 
 	void SpawnBoid(); 
+	//virtual void Draw(DrawData* _DD) override;
 protected:
 	IEffectFactory* m_fxFactory;
+	ID3D11Device* m_pd3dDevice;
+	string m_fileName; 
+	vector<boid> boids; 
 };
-
-#endif

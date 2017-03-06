@@ -23,6 +23,7 @@ class GameObject;
 class GameObject2D;
 class Camera;
 class TPSCamera;
+class BoidManager; 
 struct GameData;
 struct DrawData;
 struct DrawData2D;
@@ -66,10 +67,10 @@ protected:
 	GameData* m_GD;			//Data to be shared to all Game Objects as they are ticked
 	DrawData* m_DD;			//Data to be shared to all Game Objects as they are drawn
 	DrawData2D * m_DD2D;	//Data to be passed by game to all 2D Game Objects via Draw 
-
+	BoidManager* m_boidManager; 
 	//sound stuff
 	std::unique_ptr<AudioEngine> m_audioEngine;
-
+	
 	//Tick functions for each state
 	void PlayTick();
 };

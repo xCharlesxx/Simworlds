@@ -20,7 +20,7 @@ Boid::~Boid()
 
 void Boid::Spawn()
 {
-	_pd3dDevice = _pd3dDevice;
+//	_pd3dDevice = _pd3dDevice;
 }
 
 void Boid::Tick(GameData* _GD)
