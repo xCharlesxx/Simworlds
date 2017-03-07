@@ -33,21 +33,17 @@ void BoidManager::InitialiseBoidPos()
 
 void BoidManager::UpdateBoidPos(DrawData* _DD)
 {
-	string output = ""; 
 	for (int i = 0; i < boids.size(); ++i)
 	{
 		boids[i]->Update(); 
 		boids[i]->Draw(_DD); 
-		cout << "Update and Drawing boid ";
-		cout << i;
-		cout << "\n";
 	}
-	output = "Updated and Drawn ";
-	output += boids.size();
-	output += " boids\n";
+	//Debug print size of boid vector
 	if (prevSize != boids.size())
 	{
-		cout << output;
+		cout << "Updated and Drawn ";
+		cout << boids.size();
+		cout << " boids\n";
 		prevSize = boids.size();
 	}
 }
