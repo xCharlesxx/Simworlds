@@ -10,8 +10,7 @@ BoidManager::BoidManager(string _fileName, ID3D11Device* _pd3dDevice, IEffectFac
 	m_fxFactory = _EF; 
 	m_pd3dDevice = _pd3dDevice; 
 	m_fileName = _fileName; 
-	boids.reserve(boidPool); 
-
+	m_boids.reserve(boidPool);
 }
 
 BoidManager::~BoidManager()
@@ -21,8 +20,8 @@ BoidManager::~BoidManager()
 
 void BoidManager::SpawnBoid()
 {
-	Boid* boid = new Boid(m_fileName, m_pd3dDevice, m_fxFactory);
-	boids.push_back(boid); 
+	Boid* boid = new Boid(m_pd3dDevice);
+	m_boids.push_back(boid); 
 }
 
 void BoidManager::InitialiseBoidPos()
@@ -31,33 +30,33 @@ void BoidManager::InitialiseBoidPos()
 	//UpdateBoidPos();
 }
 
-void BoidManager::UpdateBoidPos(DrawData* _DD)
+void BoidManager::UpdateBoidPos(DrawData* _DD, GameData* _GD)
 {
-	for (int i = 0; i < boids.size(); ++i)
+	for (int i = 0; i < m_boids.size(); ++i)
 	{
-		boids[i]->Update(); 
-		boids[i]->Draw(_DD); 
+		m_boids[i]->Update(_GD);
+		//m_boids[i]->Tick(_GD); 
 	}
 	//Debug print size of boid vector
-	if (prevSize != boids.size())
+	if (prevSize != m_boids.size())
 	{
-		cout << "Updated and Drawn ";
-		cout << boids.size();
+		cout << "Updating ";
+		cout << m_boids.size();
 		cout << " boids\n";
-		prevSize = boids.size();
+		prevSize = m_boids.size();
 	}
 }
 
 void BoidManager::DrawBoids(DrawData* _DD)
 {
-	for (int i = 0; i < boids.size(); ++i)
+	for (int i = 0; i < m_boids.size(); ++i)
 	{
-		boids[i]->Draw(_DD);
+		m_boids[i]->Draw(_DD);
 	}
 }
 void BoidManager::Tick(GameData* _GD, DrawData* _DD)
 {
-	UpdateBoidPos(_DD); 
-	//DrawBoids(_DD); 
+	UpdateBoidPos(_DD, _GD);
+	DrawBoids(_DD); 
 	//apply my base behaviour
 }
