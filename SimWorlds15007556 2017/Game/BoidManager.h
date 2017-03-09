@@ -26,5 +26,5 @@ protected:
 	vector<Boid*> m_boids; 
 	int prevSize = 0;
 	int boidsAlive = 0; 
-	const int boidPool = 1000; 
+	const int boidPool = 200; 
 };
