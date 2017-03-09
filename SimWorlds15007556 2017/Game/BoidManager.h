@@ -25,5 +25,6 @@ protected:
 	string m_fileName; 
 	vector<Boid*> m_boids; 
 	int prevSize = 0;
-	const int boidPool = 200; 
+	int boidsAlive = 0; 
+	const int boidPool = 1000; 
 };

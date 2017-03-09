@@ -96,7 +96,7 @@ Game::Game(ID3D11Device* _pd3dDevice, HWND _hWnd, HINSTANCE _hInstance)
 
 	//add Boid manager
 	m_boidManager = new BoidManager("BirdModelV1.cmo", _pd3dDevice, m_fxFactory);
-
+	
 	//add a secondary camera
 	m_TPScam = new TPSCamera(0.25f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 10.0f, 50.0f));
 	m_GameObjects.push_back(m_TPScam);
@@ -288,7 +288,7 @@ void Game::PlayTick()
 			m_GD->m_GS = GS_PLAY_MAIN_CAM;
 		}
 	}
-	if ((m_keyboardState[DIK_B] & 0x80) && !(m_prevKeyboardState[DIK_B] & 0x80))
+	if ((m_keyboardState[DIK_B] & 0x80))
 	{
 		m_boidManager->SpawnBoid(); 
 	}
@@ -332,9 +332,10 @@ void Game::Draw(ID3D11DeviceContext* _pd3dImmediateContext)
 		(*it)->Draw(m_DD2D);
 	}
 	m_DD2D->m_Sprites->End();
-
+	m_boidManager->DrawBoids(m_DD); 
 	//drawing text screws up the Depth Stencil State, this puts it back again!
 	_pd3dImmediateContext->OMSetDepthStencilState(m_states->DepthDefault(), 0);
+	
 };
 
 

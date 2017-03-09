@@ -13,8 +13,12 @@ public:
 	Boid(ID3D11Device* _pd3dDevice);
 	~Boid();
 	void Update(GameData* _GD);
-	virtual void Tick(GameData* _GD) override;
+	virtual void Draw(DrawData* _DD) override;
+	bool getAlive(); 
+	void setAlive(bool alive); 
 protected:
 	int m_size;
 	myVertex* m_vertices;
+	bool isAlive = false; 
+	bool once = false; 
 };

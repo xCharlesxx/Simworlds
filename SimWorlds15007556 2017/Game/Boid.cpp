@@ -1,22 +1,34 @@
 #include "Boid.h"
 #include <dinput.h>
 #include "GameData.h"
-
+#include <iostream>
+#include <ctime>
 Boid::Boid(ID3D11Device* _pd3dDevice)
 {
-	m_pos = Vector3(0, 10, 0);
+	int randx = rand() % 20 - 10;
+	int randy = rand() % 20 - 10;
+	int randz = rand() % 20 - 10;
+	m_pos = Vector3(randx, randy, randz);
+
 	int numVerts = 3;
 	int vert = 0; 
 	m_numPrims = numVerts / 3;
 	m_vertices = new myVertex[numVerts];
 	WORD* indices = new WORD[numVerts];
-	m_vertices[vert].Color = Color(1.0f, 0.0f, 0.0f, 1.0f);
-	m_vertices[vert++].Pos = Vector3(1, 0, 1);
-	m_vertices[vert].Color = Color(1.0f, 0.0f, 0.0f, 1.0f);
-	m_vertices[vert++].Pos = Vector3(1, 0, 2);
-	m_vertices[vert].Color = Color(1.0f, 0.0f, 0.0f, 1.0f);
-	m_vertices[vert++].Pos = Vector3(2, 0, 1.5);
-	for (int i = 0; i<m_numPrims; i++)
+	for (int i = 0; i<numVerts; i++)
+	{
+		indices[i] = i;
+		m_vertices[i].texCoord = Vector2::One;
+	}
+	m_vertices[0].Color = Color(1.0f, 0.0f, 0.0f, 1.0f);
+	m_vertices[0].Pos = Vector3(0.0f, 0.0f, 0.0f);
+	m_vertices[1].Color = Color(1.0f, 0.0f, 0.0f, 1.0f);
+	m_vertices[1].Pos = Vector3(0.0f, 0.0f, 2.0f);
+	m_vertices[2].Color = Color(1.0f, 0.0f, 0.0f, 1.0f);
+	m_vertices[2].Pos = Vector3(2.0f, 0.0f, 1.0f);
+
+
+	for (int i = 0; i< m_numPrims; i++)
 	{
 		WORD V1 = 3 * i;
 		WORD V2 = 3 * i + 1;
@@ -34,7 +46,6 @@ Boid::Boid(ID3D11Device* _pd3dDevice)
 		m_vertices[V3].Norm = norm;
 	}
 
-
 	BuildIB(_pd3dDevice, indices);
 	BuildVB(_pd3dDevice, numVerts, m_vertices);
 
@@ -50,73 +61,32 @@ Boid::~Boid()
 
 void Boid::Update(GameData* _GD)
 {
+
 	VBGO::Tick(_GD);
 }
 
-void Boid::Tick(GameData* _GD)
+void Boid::Draw(DrawData * _DD)
 {
-	//switch (_GD->m_GS)
-	//{
-	//case GS_PLAY_MAIN_CAM:
-	//{
-	//	{
-	//		//MOUSE CONTROL SCHEME HERE
-	//		float speed = 10.0f;
-	//		m_acc.x += speed * _GD->m_mouseState->lX;
-	//		m_acc.z += speed * _GD->m_mouseState->lY;
-	//		break;
-	//	}
-	//}
-	//case GS_PLAY_TPS_CAM:
-	//{
-	//	//TURN AND FORWARD CONTROL HERE
-	//	Vector3 forwardMove = 40.0f * Vector3::Forward;
-	//	Matrix rotMove = Matrix::CreateRotationY(m_yaw);
-	//	forwardMove = Vector3::Transform(forwardMove, rotMove);
-	//	if (_GD->m_keyboardState[DIK_W] & 0x80)
-	//	{
-	//		m_acc += forwardMove;
-	//	}
-	//	if (_GD->m_keyboardState[DIK_S] & 0x80)
-	//	{
-	//		m_acc -= forwardMove;
-	//	}
-	//	break;
-	//}
-	//}
+	if (once == false)
+	{
+		std::cout << "The Starting Coordinates for this boid is: (";
+		std::cout << this->m_pos.x;
+		std::cout << ", ";
+		std::cout << this->m_pos.y;
+		std::cout << ", ";
+		std::cout << this->m_pos.z;
+		std::cout << ")\n";
+		once = true;
+	}
+	VBGO::Draw(_DD);
+}
 
-	////change orinetation of player
-	//float rotSpeed = 2.0f * _GD->m_dt;
-	//if (_GD->m_keyboardState[DIK_A] & 0x80)
-	//{
-	//	m_yaw += rotSpeed;
-	//}
-	//if (_GD->m_keyboardState[DIK_D] & 0x80)
-	//{
-	//	m_yaw -= rotSpeed;
-	//}
+bool Boid::getAlive()
+{
+	return isAlive;
+}
 
-	////move player up and down
-	//if (_GD->m_keyboardState[DIK_R] & 0x80)
-	//{
-	//	m_acc.y += 40.0f;
-	//}
-
-	//if (_GD->m_keyboardState[DIK_F] & 0x80)
-	//{
-	//	m_acc.y -= 40.0f;
-	//}
-
-	////limit motion of the player
-	//float length = m_pos.Length();
-	//float maxLength = 500.0f;
-	//if (length > maxLength)
-	//{
-	//	m_pos.Normalize();
-	//	m_pos *= maxLength;
-	//	m_vel *= -0.9; //VERY simple bounce back
-	//}
-
-	//apply my base behaviour
-	//VBGO::Tick(_GD);
+void Boid::setAlive(bool alive)
+{
+	isAlive = alive; 
 }
