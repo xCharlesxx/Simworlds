@@ -9,6 +9,7 @@ Boid::Boid(ID3D11Device* _pd3dDevice)
 	int randy = rand() % 20 - 10;
 	int randz = rand() % 20 - 10;
 	m_pos = Vector3(randx, randy, randz);
+	velocity = Vector3::Zero;
 
 	int numVerts = 3;
 	int vert = 0; 
@@ -59,25 +60,32 @@ Boid::~Boid()
 	//tidy up anything I've created
 }
 
-void Boid::Update(GameData* _GD)
+void Boid::Update(GameData* _GD, Vector3 m_force)
 {
-
-	VBGO::Tick(_GD);
+	velocity = velocity + m_force; 
+	//std::cout << velocity.x; 
+	if (velocity.x > maxVelocity.x || velocity.y > maxVelocity.y || velocity.z > maxVelocity.z)
+	{
+		velocity = velocity * 0.5;
+	}
+	m_pos = m_pos + velocity;
+	m_rotMat = Matrix::CreateWorld(m_pos, velocity, Vector3::Up); 
+	Matrix  scaleMat = Matrix::CreateScale(m_scale);
+	Matrix  transMat = Matrix::CreateTranslation(m_pos);
+	m_worldMat = m_fudge * scaleMat * m_rotMat * transMat;
+	/*std::cout << "Velocity is currently: (";
+	std::cout << velocity.x;
+	std::cout << ", ";
+	std::cout << velocity.y;
+	std::cout << ", ";
+	std::cout << velocity.z;
+	std::cout << ")\n";*/
+	//outputBoidPos(); 
+	//VBGO::Tick(_GD);
 }
 
 void Boid::Draw(DrawData * _DD)
 {
-	if (once == false)
-	{
-		std::cout << "The Starting Coordinates for this boid is: (";
-		std::cout << this->m_pos.x;
-		std::cout << ", ";
-		std::cout << this->m_pos.y;
-		std::cout << ", ";
-		std::cout << this->m_pos.z;
-		std::cout << ")\n";
-		once = true;
-	}
 	VBGO::Draw(_DD);
 }
 
@@ -86,7 +94,23 @@ bool Boid::getAlive()
 	return isAlive;
 }
 
+Vector3 Boid::getVelocity()
+{
+	return velocity; 
+}
+
 void Boid::setAlive(bool alive)
 {
 	isAlive = alive; 
+}
+
+void Boid::outputBoidPos()
+{
+	std::cout << "The Coordinates for this boid is: (";
+	std::cout << this->m_pos.x;
+	std::cout << ", ";
+	std::cout << this->m_pos.y;
+	std::cout << ", ";
+	std::cout << this->m_pos.z;
+	std::cout << ")\n";
 }

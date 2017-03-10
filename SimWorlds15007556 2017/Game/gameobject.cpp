@@ -11,7 +11,7 @@ GameObject::GameObject()
 	m_scale = Vector3::One;
 
 	m_worldMat = Matrix::Identity;
-	m_fudge = Matrix::Identity;
+	m_fudge = Matrix::CreateRotationX(10.0f);
 }
 
 GameObject::~GameObject()

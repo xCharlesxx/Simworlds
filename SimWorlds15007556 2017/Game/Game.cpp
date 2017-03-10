@@ -288,9 +288,15 @@ void Game::PlayTick()
 			m_GD->m_GS = GS_PLAY_MAIN_CAM;
 		}
 	}
-	if ((m_keyboardState[DIK_B] & 0x80))
+	//Lots of Boids
+	if ((m_keyboardState[DIK_L] & 0x80))
 	{
 		m_boidManager->SpawnBoid(); 
+	}
+	//Single Boid
+	if ((m_keyboardState[DIK_B] & 0x80) && !(m_prevKeyboardState[DIK_B] & 0x80))
+	{
+		m_boidManager->SpawnBoid();
 	}
 	//update all objects
 	for (list<GameObject *>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)

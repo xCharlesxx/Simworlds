@@ -18,13 +18,21 @@ public:
 	void InitialiseBoidPos(); 
 	void DrawBoids(DrawData* _DD);
 	void SpawnBoid();
-	
+	Vector3 Separation(int thisBoid);
+	Vector3 Alignment(int thisBoid);
+	Vector3 Cohesion(int thisBoid); 
+	Vector3 Homing(int thisBoid); 
 protected:
 	IEffectFactory* m_fxFactory;
 	ID3D11Device* m_pd3dDevice;
 	string m_fileName; 
 	vector<Boid*> m_boids; 
-	int prevSize = 0;
 	int boidsAlive = 0; 
+	float percentCohesion = 1; 
+	float seperationDistance = 1; 
+	float homingInstinct = 0.1;
+	//Larger = less force
+	float alignmentForce = 8; 
 	const int boidPool = 200; 
+	int x = 0; 
 };

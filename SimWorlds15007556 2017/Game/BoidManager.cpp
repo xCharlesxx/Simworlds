@@ -16,6 +16,8 @@ BoidManager::BoidManager(string _fileName, ID3D11Device* _pd3dDevice, IEffectFac
 		Boid* boid = new Boid(m_pd3dDevice);
 		m_boids.push_back(boid);
 	}
+	percentCohesion = percentCohesion / 100;
+	homingInstinct = homingInstinct / 100; 
 }
 
 BoidManager::~BoidManager()
@@ -30,6 +32,11 @@ void BoidManager::SpawnBoid()
 		if (m_boids[i]->getAlive() == false)
 		{
 			m_boids[i]->setAlive(true);
+			boidsAlive++;
+			cout << "Updating ";
+			cout << boidsAlive;
+			cout << " boids\n";
+			m_boids[i]->outputBoidPos(); 
 			break; 
 		}
 	}
@@ -41,25 +48,93 @@ void BoidManager::InitialiseBoidPos()
 	//UpdateBoidPos();
 }
 
+void BoidManager::Tick(GameData* _GD, DrawData* _DD)
+{
+	UpdateBoidPos(_DD, _GD);
+	//apply my base behaviour
+}
+
 void BoidManager::UpdateBoidPos(DrawData* _DD, GameData* _GD)
 {
-	boidsAlive = 0; 
+	Vector3 v1 = Vector3::Zero;
+	Vector3 v2 = Vector3::Zero;
+	Vector3 v3 = Vector3::Zero;
+	Vector3 v4 = Vector3::Zero;
 	for (int i = 0; i < m_boids.size(); ++i)
 	{
 		if (m_boids[i]->getAlive() == true)
 		{
-			m_boids[i]->Update(_GD);
-			boidsAlive++; 
+			v1 = Separation(i);
+			v2 = Alignment(i);
+			v3 = Cohesion(i);
+			v4 = Homing(i); 
+			Vector3 force = v1 + v2 + v3 + v4;
+			m_boids[i]->Update(_GD, force);
 		}
 	}
-	//Debug print size of boid vector
-	if (prevSize != boidsAlive)
+}
+
+Vector3 BoidManager::Separation(int thisBoid)
+{
+	Vector3 seperationForce = Vector3::Zero; 
+	for (int i = 0; i < m_boids.size(); ++i)
 	{
-		cout << "Updating ";
-		cout << boidsAlive;
-		cout << " boids\n";
-		prevSize = boidsAlive;
+		if (i != thisBoid && m_boids[i]->getAlive() == true)
+		{
+			float distance = Vector3::Distance(m_boids[i]->GetPos(), m_boids[thisBoid]->GetPos());
+			if (distance < seperationDistance)
+			{
+				seperationForce = seperationForce - (m_boids[i]->GetPos() - m_boids[thisBoid]->GetPos());
+			}
+		}
 	}
+	return seperationForce;
+}
+
+Vector3 BoidManager::Alignment(int thisBoid)
+{
+	Vector3 percievedVelocity = Vector3::Zero; 
+	for (int i = 0; i < m_boids.size(); ++i)
+	{
+		if (i != thisBoid && m_boids[i]->getAlive() == true)
+		{
+			percievedVelocity = percievedVelocity + m_boids[i]->getVelocity(); 
+		}
+	}
+	if (boidsAlive != 1)
+	{
+		percievedVelocity = percievedVelocity / (boidsAlive - 1); 
+		return ((percievedVelocity - m_boids[thisBoid]->getVelocity()) / 8);
+	}
+	return Vector3::Zero;
+}
+
+Vector3 BoidManager::Cohesion(int thisBoid)
+{
+	Vector3 centerOfMass = Vector3::Zero; 
+	for (int i = 0; i < m_boids.size(); ++i)
+	{
+		//Do not include this boid in center of mass calculation
+		if (i != thisBoid && m_boids[i]->getAlive() == true)
+		{
+			centerOfMass += m_boids[i]->GetPos();
+		}
+	}
+	//Stop Dividing by Zero
+	if (boidsAlive != 1)
+	{
+		centerOfMass = centerOfMass / (boidsAlive - 1);
+		//Move boids a percentage towards the center of the group
+		return (centerOfMass - m_boids[thisBoid]->GetPos()) * percentCohesion;
+	}
+	return Vector3::Zero; 
+}
+
+Vector3 BoidManager::Homing(int thisBoid)
+{
+	Vector3 home = Vector3::Zero;
+	//Always passively head home
+	return home - m_boids[thisBoid]->GetPos() * homingInstinct;
 }
 
 void BoidManager::DrawBoids(DrawData* _DD)
@@ -71,9 +146,4 @@ void BoidManager::DrawBoids(DrawData* _DD)
 			m_boids[i]->Draw(_DD);
 		}
 	}
-}
-void BoidManager::Tick(GameData* _GD, DrawData* _DD)
-{
-	UpdateBoidPos(_DD, _GD);
-	//apply my base behaviour
 }

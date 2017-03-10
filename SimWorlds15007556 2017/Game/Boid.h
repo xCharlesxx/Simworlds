@@ -12,13 +12,16 @@ class Boid : public VBGO
 public:
 	Boid(ID3D11Device* _pd3dDevice);
 	~Boid();
-	void Update(GameData* _GD);
+	void Update(GameData* _GD, Vector3 m_force);
 	virtual void Draw(DrawData* _DD) override;
 	bool getAlive(); 
+	Vector3 getVelocity(); 
 	void setAlive(bool alive); 
+	void outputBoidPos(); 
 protected:
 	int m_size;
+	Vector3 velocity; 
+	Vector3 maxVelocity = Vector3(0.05, 0.05, 0.05); 
 	myVertex* m_vertices;
 	bool isAlive = false; 
-	bool once = false; 
 };
