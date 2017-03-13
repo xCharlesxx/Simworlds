@@ -64,10 +64,10 @@ void Boid::Update(GameData* _GD, Vector3 m_force)
 {
 	velocity = velocity + m_force; 
 	//std::cout << velocity.x; 
-	if (velocity.x > maxVelocity.x || velocity.y > maxVelocity.y || velocity.z > maxVelocity.z)
+	/*if (velocity.x > maxVelocity.x || velocity.y > maxVelocity.y || velocity.z > maxVelocity.z)
 	{
-		velocity = velocity * 0.5;
-	}
+		velocity = maxVelocity;
+	}*/
 	m_pos = m_pos + velocity;
 	m_rotMat = Matrix::CreateWorld(m_pos, velocity, Vector3::Up); 
 	Matrix  scaleMat = Matrix::CreateScale(m_scale);

@@ -298,6 +298,10 @@ void Game::PlayTick()
 	{
 		m_boidManager->SpawnBoid();
 	}
+	if ((m_keyboardState[DIK_H] & 0x80) && !(m_prevKeyboardState[DIK_H] & 0x80))
+	{
+		m_boidManager->ToggleHoming(); 
+	}
 	//update all objects
 	for (list<GameObject *>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
 	{

@@ -18,6 +18,7 @@ public:
 	void InitialiseBoidPos(); 
 	void DrawBoids(DrawData* _DD);
 	void SpawnBoid();
+	void ToggleHoming(); 
 	Vector3 Separation(int thisBoid);
 	Vector3 Alignment(int thisBoid);
 	Vector3 Cohesion(int thisBoid); 
@@ -35,4 +36,5 @@ protected:
 	float alignmentForce = 8; 
 	const int boidPool = 200; 
 	int x = 0; 
+	bool homing = false; 
 };

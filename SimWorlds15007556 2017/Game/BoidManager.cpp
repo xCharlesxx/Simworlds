@@ -42,6 +42,20 @@ void BoidManager::SpawnBoid()
 	}
 }
 
+void BoidManager::ToggleHoming()
+{
+	if (homing == true)
+	{
+		homing = false;
+		cout << "Homing = False\n"; 
+	}
+	else
+	{
+		homing = true;
+		cout << "Homing = True\n";
+	}
+}
+
 void BoidManager::InitialiseBoidPos()
 {
 	//Draw boids 
@@ -67,6 +81,7 @@ void BoidManager::UpdateBoidPos(DrawData* _DD, GameData* _GD)
 			v1 = Separation(i);
 			v2 = Alignment(i);
 			v3 = Cohesion(i);
+			if (homing == true)
 			v4 = Homing(i); 
 			Vector3 force = v1 + v2 + v3 + v4;
 			m_boids[i]->Update(_GD, force);
