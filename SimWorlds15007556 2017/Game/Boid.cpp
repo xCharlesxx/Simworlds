@@ -26,7 +26,7 @@ Boid::Boid(ID3D11Device* _pd3dDevice)
 	m_vertices[1].Color = Color(1.0f, 0.0f, 0.0f, 1.0f);
 	m_vertices[1].Pos = Vector3(0.0f, 0.0f, 2.0f);
 	m_vertices[2].Color = Color(1.0f, 0.0f, 0.0f, 1.0f);
-	m_vertices[2].Pos = Vector3(2.0f, 0.0f, 1.0f);
+	m_vertices[2].Pos = Vector3(3.0f, 0.0f, 1.0f);
 
 
 	for (int i = 0; i< m_numPrims; i++)
