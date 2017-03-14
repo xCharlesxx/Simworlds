@@ -12,6 +12,7 @@
 #include "drawdata.h"
 #include "DrawData2D.h"
 #include "BoidManager.h"
+#include <iostream>
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -55,7 +56,7 @@ Game::Game(ID3D11Device* _pd3dDevice, HWND _hWnd, HINSTANCE _hInstance)
 	m_GD = new GameData;
 	m_GD->m_keyboardState = m_keyboardState;
 	m_GD->m_prevKeyboardState = m_prevKeyboardState;
-	m_GD->m_GS = GS_PLAY_TPS_CAM;
+	m_GD->m_GS = GS_PLAY_MAIN_CAM;
 	m_GD->m_mouseState = &m_mouseState;
 
 	//set up DirectXTK Effects system
@@ -83,7 +84,7 @@ Game::Game(ID3D11Device* _pd3dDevice, HWND _hWnd, HINSTANCE _hInstance)
 
 	//create a base camera
 	m_cam = new Camera(0.25f * XM_PI, AR, 1.0f, 10000.0f, Vector3::UnitY, Vector3::Zero);
-	m_cam->SetPos(Vector3(0.0f, 100.0f, 100.0f));
+	m_cam->SetPos(Vector3(0.0f, zoomPos, zoomPos));
 	m_GameObjects.push_back(m_cam);
 
 	//create a base light
@@ -92,7 +93,7 @@ Game::Game(ID3D11Device* _pd3dDevice, HWND _hWnd, HINSTANCE _hInstance)
 
 	//add Player
 	Player* pPlayer = new Player("BirdModelV1.cmo", _pd3dDevice, m_fxFactory);
-	m_GameObjects.push_back(pPlayer);
+	//m_GameObjects.push_back(pPlayer);
 
 	//add Boid manager
 	m_boidManager = new BoidManager("BirdModelV1.cmo", _pd3dDevice, m_fxFactory);
@@ -265,8 +266,8 @@ bool Game::Tick()
 		break;
 	case GS_GAME_OVER:
 		break;
-	case GS_PLAY_MAIN_CAM:
 	case GS_PLAY_TPS_CAM:
+	case GS_PLAY_MAIN_CAM:
 		PlayTick();
 		break;
 	}
@@ -302,6 +303,17 @@ void Game::PlayTick()
 	{
 		m_boidManager->ToggleHoming(); 
 	}
+	if (m_GD->m_mouseState->lZ > 0.0f)
+	{
+		m_cam->SetPos(Vector3(0.0f, zoomPos--, zoomPos--));
+	}
+	if (m_GD->m_mouseState->lZ < 0.0f)
+	{
+		m_cam->SetPos(Vector3(0.0f, zoomPos++, zoomPos++));
+	}
+	
+	//std::cout << m_GD->m_mouseState->lZ; 
+	
 	//update all objects
 	for (list<GameObject *>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
 	{

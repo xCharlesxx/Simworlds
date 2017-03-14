@@ -23,6 +23,7 @@ public:
 	Vector3 Alignment(int thisBoid);
 	Vector3 Cohesion(int thisBoid); 
 	Vector3 Homing(int thisBoid); 
+
 protected:
 	IEffectFactory* m_fxFactory;
 	ID3D11Device* m_pd3dDevice;
@@ -31,10 +32,10 @@ protected:
 	int boidsAlive = 0; 
 	float percentCohesion = 1; 
 	float seperationDistance = 1; 
-	float homingInstinct = 0.1;
+	float homingInstinct = 5;
 	//Larger = less force
 	float alignmentForce = 8; 
-	const int boidPool = 200; 
+	const int boidPool = 1000; 
 	int x = 0; 
-	bool homing = false; 
+	bool homing = false;
 };

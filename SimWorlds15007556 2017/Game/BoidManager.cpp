@@ -83,8 +83,9 @@ void BoidManager::UpdateBoidPos(DrawData* _DD, GameData* _GD)
 			v3 = Cohesion(i);
 			if (homing == true)
 			v4 = Homing(i); 
-			Vector3 force = v1 + v2 + v3 + v4;
-			m_boids[i]->Update(_GD, force);
+			Vector3 velocity = v1 + v2 + v3 + v4;
+			Vector3 acceleration = velocity * _GD->m_dt;
+			m_boids[i]->Update(_GD, acceleration);
 		}
 	}
 }
