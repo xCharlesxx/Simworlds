@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "../Game/Game.h"
 #include <stdio.h>
+#include <AntTweakBar.h>
 
 //=================================================================
 // Main functions to link to the windows OS
@@ -74,7 +75,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	PAINTSTRUCT ps;
 	HDC hdc;
-
+	if (TwEventWin(hWnd, message, wParam, lParam)) // send event message to AntTweakBar
+		return 0; // event has been handled by AntTweakBar
+				  // else process the event message
+				  // ...
 	switch (message)
 	{
 	case WM_PAINT:
