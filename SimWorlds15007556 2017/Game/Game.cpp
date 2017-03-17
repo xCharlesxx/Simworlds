@@ -13,6 +13,7 @@
 #include "DrawData2D.h"
 #include "BoidManager.h"
 #include <iostream>
+#include <AntTweakBar.h>
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -95,9 +96,17 @@ Game::Game(ID3D11Device* _pd3dDevice, HWND _hWnd, HINSTANCE _hInstance)
 	Player* pPlayer = new Player("BirdModelV1.cmo", _pd3dDevice, m_fxFactory);
 	//m_GameObjects.push_back(pPlayer);
 
+	//add anttweakbar 
+	TwInit(TW_DIRECT3D11, _pd3dDevice);
+	TwBar *myBar;
+	myBar = TwNewBar("Boid Settings");
+	TwWindowSize(width, height);
+
 	//add Boid manager
 	m_boidManager = new BoidManager("BirdModelV1.cmo", _pd3dDevice, m_fxFactory);
 	
+
+	//TwAddVarRW(myBar, "Alignment Force", TW_TYPE_FLOAT, &width, "min = 0 max = 10 step = 0.1");
 	//add a secondary camera
 	m_TPScam = new TPSCamera(0.25f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 10.0f, 50.0f));
 	m_GameObjects.push_back(m_TPScam);
@@ -216,7 +225,7 @@ Game::~Game()
 		delete (*it);
 	}
 	m_GameObject2Ds.clear();
-
+	TwTerminate(); 
 	//clear away CMO render system
 	delete m_states;
 	delete m_fxFactory;
@@ -247,10 +256,10 @@ bool Game::Tick()
 		return false;
 	}
 
-	//lock the cursor to the centre of the window
-	RECT window;
-	GetWindowRect(m_hWnd, &window);
-	SetCursorPos((window.left + window.right) >> 1, (window.bottom + window.top) >> 1);
+	////lock the cursor to the centre of the window
+	//RECT window;
+	//GetWindowRect(m_hWnd, &window);
+	//SetCursorPos((window.left + window.right) >> 1, (window.bottom + window.top) >> 1);
 
 	//calculate frame time-step dt for passing down to game objects
 	DWORD currentTime = GetTickCount();
@@ -355,6 +364,7 @@ void Game::Draw(ID3D11DeviceContext* _pd3dImmediateContext)
 	}
 	m_DD2D->m_Sprites->End();
 	m_boidManager->DrawBoids(m_DD); 
+	TwDraw(); 
 	//drawing text screws up the Depth Stencil State, this puts it back again!
 	_pd3dImmediateContext->OMSetDepthStencilState(m_states->DepthDefault(), 0);
 	

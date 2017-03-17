@@ -19,11 +19,15 @@ public:
 	void DrawBoids(DrawData* _DD);
 	void SpawnBoid();
 	void ToggleHoming(); 
+	void initTweakBar(); 
 	Vector3 Separation(int thisBoid);
 	Vector3 Alignment(int thisBoid);
 	Vector3 Cohesion(int thisBoid); 
 	Vector3 Homing(int thisBoid); 
-
+	float getSeperation(); 
+	float getCohesion(); 
+	float getAlignment(); 
+	float getHoming(); 
 protected:
 	IEffectFactory* m_fxFactory;
 	ID3D11Device* m_pd3dDevice;
@@ -36,6 +40,7 @@ protected:
 	//Larger = less force
 	float alignmentForce = 8; 
 	const int boidPool = 1000; 
+	float maxSpeed = 0.1; 
 	int x = 0; 
 	bool homing = false;
 };
