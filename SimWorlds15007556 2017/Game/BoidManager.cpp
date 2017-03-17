@@ -4,7 +4,6 @@
 #include "Boid.h"
 #include "DrawData.h"
 #include <iostream>
-#include <AntTweakBar.h>
 
 BoidManager::BoidManager(string _fileName, ID3D11Device* _pd3dDevice, IEffectFactory* _EF)
 {
@@ -19,7 +18,6 @@ BoidManager::BoidManager(string _fileName, ID3D11Device* _pd3dDevice, IEffectFac
 	}
 	percentCohesion = percentCohesion / 100;
 	homingInstinct = homingInstinct / 100; 
-	initTweakBar(); 
 }
 
 BoidManager::~BoidManager()
@@ -87,7 +85,6 @@ void BoidManager::UpdateBoidPos(DrawData* _DD, GameData* _GD)
 			v4 = Homing(i); 
 			Vector3 velocity = v1 + v2 + v3 + v4;
 			Vector3 acceleration = velocity * _GD->m_dt;
-			XMVector3ClampLength(acceleration, 0.0, maxSpeed);
 			m_boids[i]->Update(_GD, acceleration);
 		}
 	}
@@ -156,26 +153,6 @@ Vector3 BoidManager::Homing(int thisBoid)
 	return home - m_boids[thisBoid]->GetPos() * homingInstinct;
 }
 
-float BoidManager::getSeperation()
-{
-	return seperationDistance;
-}
-
-float BoidManager::getCohesion()
-{
-	return percentCohesion;
-}
-
-float BoidManager::getAlignment()
-{
-	return alignmentForce;
-}
-
-float BoidManager::getHoming()
-{
-	return homingInstinct;
-}
-
 void BoidManager::DrawBoids(DrawData* _DD)
 {
 	for (int i = 0; i < m_boids.size(); ++i)
@@ -185,21 +162,4 @@ void BoidManager::DrawBoids(DrawData* _DD)
 			m_boids[i]->Draw(_DD);
 		}
 	}
-}
-
-void BoidManager::initTweakBar()
-{
-	TwBar* p_myBar;
-	p_myBar = TwGetBarByName("Boid Settings");
-	TwAddVarRW(p_myBar, "Alignment Force", TW_TYPE_FLOAT, &alignmentForce, "min = 0 max = 10 step = 0.1");
-	TwAddVarRW(p_myBar, "Percent Cohesion", TW_TYPE_FLOAT, &percentCohesion, "min = 0 max = 100 step = 0.1");
-	TwAddVarRW(p_myBar, "Seperation Distance", TW_TYPE_FLOAT, &seperationDistance, "min = 0 max = 10 step = 0.1");
-	TwAddVarRW(p_myBar, "Homing instinct", TW_TYPE_FLOAT, &homingInstinct, "min = 0 max = 10 step = 0.1");
-	TwAddVarRW(p_myBar, "Max Speed", TW_TYPE_FLOAT, &maxSpeed, "min = 0 max = 10 step = 0.1");
-	/*TwAddVarRW(p_myBar, "NameOfMyVariable", TW_TYPE_FLOAT, &alignmentForce, "");
-	TwAddVarRW(p_myBar, "NameOfMyVariable", TW_TYPE_FLOAT, &alignmentForce, "");
-	TwAddVarRW(p_myBar, "NameOfMyVariable", TW_TYPE_FLOAT, &alignmentForce, "");
-	TwAddVarRW(p_myBar, "NameOfMyVariable", TW_TYPE_FLOAT, &alignmentForce, "");
-	TwAddVarRW(p_myBar, "NameOfMyVariable", TW_TYPE_FLOAT, &alignmentForce, "");*/
-
 }
