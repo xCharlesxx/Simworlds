@@ -314,11 +314,11 @@ void Game::PlayTick()
 	}
 	if (m_GD->m_mouseState->lZ > 0.0f)
 	{
-		m_cam->SetPos(Vector3(0.0f, zoomPos--, zoomPos--));
+		m_cam->SetPos(Vector3(0.0f, zoomPos-=10, zoomPos-=10));
 	}
 	if (m_GD->m_mouseState->lZ < 0.0f)
 	{
-		m_cam->SetPos(Vector3(0.0f, zoomPos++, zoomPos++));
+		m_cam->SetPos(Vector3(0.0f, zoomPos+=10, zoomPos+=10));
 	}
 	
 	//std::cout << m_GD->m_mouseState->lZ; 

@@ -40,7 +40,7 @@ protected:
 	//Larger = less force
 	float alignmentForce = 8; 
 	const int boidPool = 1000; 
-	float maxSpeed = 0.1; 
+	float maxAcc = 1; 
 	int x = 0; 
-	bool homing = false;
+	bool homing = true;
 };

@@ -21,7 +21,6 @@ public:
 protected:
 	int m_size;
 	Vector3 velocity; 
-	Vector3 maxVelocity = Vector3(0.05, 0.05, 0.05); 
 	myVertex* m_vertices;
 	bool isAlive = false; 
 };

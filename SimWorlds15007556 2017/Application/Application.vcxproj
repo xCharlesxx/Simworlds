@@ -95,8 +95,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\Game</IncludePath>
-    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir);..\Lib\um\x86;..\Bin\Desktop_2015\$(Platform)\$(Configuration)\</LibraryPath>
+    <IncludePath>C:\Users\Charles\Documents\GitHub\Simworlds\SimWorlds15007556 2017\AntTweakBar\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);..\Game</IncludePath>
+    <LibraryPath>C:\Users\Charles\Documents\GitHub\Simworlds\SimWorlds15007556 2017\AntTweakBar\lib;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir);..\Lib\um\x86;..\Bin\Desktop_2015\$(Platform)\$(Configuration)\</LibraryPath>
+    <SourcePath>C:\Users\Charles\Documents\GitHub\Simworlds\SimWorlds15007556 2017\AntTweakBar\src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|X64'">
     <LinkIncremental>true</LinkIncremental>
@@ -105,9 +106,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
-    <LibraryPath>E:\Charlie\Simworlds\SimWorlds15007556 2017\AntTweakBar\lib;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir);..\Lib\um\x86;..\Bin\Desktop_2015\$(Platform)\$(Configuration)\</LibraryPath>
-    <IncludePath>E:\Charlie\Simworlds\SimWorlds15007556 2017\AntTweakBar\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);..\Game</IncludePath>
-    <SourcePath>E:\Charlie\Simworlds\SimWorlds15007556 2017\AntTweakBar\src;$(SourcePath)</SourcePath>
+    <LibraryPath>C:\Users\Charles\Documents\GitHub\Simworlds\SimWorlds15007556 2017\AntTweakBar\lib;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir);..\Lib\um\x86;..\Bin\Desktop_2015\$(Platform)\$(Configuration)\</LibraryPath>
+    <IncludePath>C:\Users\Charles\Documents\GitHub\Simworlds\SimWorlds15007556 2017\AntTweakBar\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);..\Game</IncludePath>
+    <SourcePath>C:\Users\Charles\Documents\GitHub\Simworlds\SimWorlds15007556 2017\AntTweakBar\src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|X64'">
     <LinkIncremental>false</LinkIncremental>
@@ -141,7 +142,7 @@
     </ClCompile>
     <Link>
       <AdditionalOptions> %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dinput8.lib;dxguid.lib;winmm.lib;comctl32.lib;%(AdditionalDependencies);game.lib;DirectXTK.lib;DirectXTKAudioWin8.lib</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dinput8.lib;dxguid.lib;winmm.lib;comctl32.lib;%(AdditionalDependencies);game.lib;DirectXTK.lib;DirectXTKAudioWin8.lib;AntTweakBar.lib;AntTweakBar64.lib</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <LargeAddressAware>true</LargeAddressAware>

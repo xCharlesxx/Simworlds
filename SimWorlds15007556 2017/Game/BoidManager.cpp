@@ -87,7 +87,7 @@ void BoidManager::UpdateBoidPos(DrawData* _DD, GameData* _GD)
 			v4 = Homing(i); 
 			Vector3 velocity = v1 + v2 + v3 + v4;
 			Vector3 acceleration = velocity * _GD->m_dt;
-			XMVector3ClampLength(acceleration, 0.0, maxSpeed);
+			acceleration = XMVector3ClampLength(acceleration, 0.0, maxAcc);
 			m_boids[i]->Update(_GD, acceleration);
 		}
 	}
@@ -123,7 +123,7 @@ Vector3 BoidManager::Alignment(int thisBoid)
 	if (boidsAlive != 1)
 	{
 		percievedVelocity = percievedVelocity / (boidsAlive - 1); 
-		return ((percievedVelocity - m_boids[thisBoid]->getVelocity()) / 8);
+		return ((percievedVelocity - m_boids[thisBoid]->getVelocity()) / alignmentForce);
 	}
 	return Vector3::Zero;
 }
@@ -191,11 +191,12 @@ void BoidManager::initTweakBar()
 {
 	TwBar* p_myBar;
 	p_myBar = TwGetBarByName("Boid Settings");
-	TwAddVarRW(p_myBar, "Alignment Force", TW_TYPE_FLOAT, &alignmentForce, "min = 0 max = 10 step = 0.1");
-	TwAddVarRW(p_myBar, "Percent Cohesion", TW_TYPE_FLOAT, &percentCohesion, "min = 0 max = 100 step = 0.1");
-	TwAddVarRW(p_myBar, "Seperation Distance", TW_TYPE_FLOAT, &seperationDistance, "min = 0 max = 10 step = 0.1");
-	TwAddVarRW(p_myBar, "Homing instinct", TW_TYPE_FLOAT, &homingInstinct, "min = 0 max = 10 step = 0.1");
-	TwAddVarRW(p_myBar, "Max Speed", TW_TYPE_FLOAT, &maxSpeed, "min = 0 max = 10 step = 0.1");
+	
+	TwAddVarRW(p_myBar, "Alignment", TW_TYPE_FLOAT, &alignmentForce, "min = 0.1 max = 10 step = 0.1");
+	TwAddVarRW(p_myBar, "Cohesion", TW_TYPE_FLOAT, &percentCohesion, "min = 0 max = 1 step = 0.01");
+	TwAddVarRW(p_myBar, "Seperation", TW_TYPE_FLOAT, &seperationDistance, "min = 0 max = 10 step = 0.1");
+	TwAddVarRW(p_myBar, "Homing", TW_TYPE_FLOAT, &homingInstinct, "min = 0 max = 1 step = 0.01");
+	TwAddVarRW(p_myBar, "Acceleration", TW_TYPE_FLOAT, &maxAcc, "min = 0.01 max = 1 step = 0.01");
 	/*TwAddVarRW(p_myBar, "NameOfMyVariable", TW_TYPE_FLOAT, &alignmentForce, "");
 	TwAddVarRW(p_myBar, "NameOfMyVariable", TW_TYPE_FLOAT, &alignmentForce, "");
 	TwAddVarRW(p_myBar, "NameOfMyVariable", TW_TYPE_FLOAT, &alignmentForce, "");
