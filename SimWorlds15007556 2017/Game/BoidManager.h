@@ -3,6 +3,7 @@
 #include <vector>
 
 class Boid;
+class InvisibleObject; 
 struct GameData; 
 struct DrawData; 
 
@@ -33,14 +34,16 @@ protected:
 	ID3D11Device* m_pd3dDevice;
 	string m_fileName; 
 	vector<Boid*> m_boids; 
+	vector<InvisibleObject*> m_invObj; 
 	int boidsAlive = 0; 
-	float percentCohesion = 1; 
-	float seperationDistance = 1; 
-	float homingInstinct = 5;
+	float percentCohesion = 0.1; 
+	float seperationDistance = 0.05; 
+	float homingInstinct = 0.005;
 	//Larger = less force
-	float alignmentForce = 8; 
+	float alignmentForce = 0.15; 
 	const int boidPool = 1000; 
-	float maxAcc = 1; 
+	float maxAcc = 0.1; 
 	int x = 0; 
+	float xPos = 0; 
 	bool homing = true;
 };

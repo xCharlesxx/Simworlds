@@ -24,6 +24,9 @@
     <None Include="shader.fx">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Bust\Bust.FBX">
+      <Filter>Models</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <MeshContentTask Include="Bird\BirdModelV1.fbx">

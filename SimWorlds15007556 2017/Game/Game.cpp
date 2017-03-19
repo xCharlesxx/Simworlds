@@ -12,6 +12,7 @@
 #include "drawdata.h"
 #include "DrawData2D.h"
 #include "BoidManager.h"
+#include "InvisibleObject.h"
 #include <iostream>
 #include <AntTweakBar.h>
 
@@ -119,8 +120,7 @@ Game::Game(ID3D11Device* _pd3dDevice, HWND _hWnd, HINSTANCE _hInstance)
 	m_DD->m_light = m_light;
 
 	//add random content to show the various what you've got here
-	/*Terrain* terrain = new Terrain("table.cmo", _pd3dDevice, m_fxFactory, Vector3(100.0f, 0.0f, 100.0f), 0.0f, 0.0f, 0.0f, 0.25f * Vector3::One);
-	m_GameObjects.push_back(terrain);*/
+	//InvisibleObject* invObj = new InvisibleObject("table.cmo", _pd3dDevice, m_fxFactory, Vector3(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f, 0.25f * Vector3::One);
 
 	//add some stuff to show off
 
@@ -352,7 +352,7 @@ void Game::Draw(ID3D11DeviceContext* _pd3dImmediateContext)
 
 	//draw all objects
 	for (list<GameObject *>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
-	{
+	{ 
 		(*it)->Draw(m_DD);
 	}
 

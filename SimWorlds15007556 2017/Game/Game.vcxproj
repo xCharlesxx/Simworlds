@@ -142,6 +142,7 @@
     <ClInclude Include="GameState.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="ImageGO2D.h" />
+    <ClInclude Include="InvisibleObject.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="MarchCubes.h" />
     <ClInclude Include="ObjectList.h" />
@@ -169,6 +170,7 @@
     <ClCompile Include="gameobject.cpp" />
     <ClCompile Include="GameObject2D.cpp" />
     <ClCompile Include="ImageGO2D.cpp" />
+    <ClCompile Include="InvisibleObject.cpp" />
     <ClCompile Include="light.cpp" />
     <ClCompile Include="MarchCubes.cpp" />
     <ClCompile Include="Player.cpp" />

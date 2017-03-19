@@ -138,6 +138,9 @@
     <ClInclude Include="BoidManager.h">
       <Filter>Objects\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="InvisibleObject.h">
+      <Filter>Objects\Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -198,6 +201,9 @@
       <Filter>Objects\Source</Filter>
     </ClCompile>
     <ClCompile Include="BoidManager.cpp">
+      <Filter>Objects\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="InvisibleObject.cpp">
       <Filter>Objects\Source</Filter>
     </ClCompile>
   </ItemGroup>

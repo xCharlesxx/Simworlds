@@ -2,6 +2,7 @@
 #include <dinput.h>
 #include "GameData.h"
 #include "Boid.h"
+#include "InvisibleObject.h"
 #include "DrawData.h"
 #include <iostream>
 #include <AntTweakBar.h>
@@ -17,8 +18,11 @@ BoidManager::BoidManager(string _fileName, ID3D11Device* _pd3dDevice, IEffectFac
 		Boid* boid = new Boid(m_pd3dDevice);
 		m_boids.push_back(boid);
 	}
-	percentCohesion = percentCohesion / 100;
-	homingInstinct = homingInstinct / 100; 
+	for (int i = 0; i < 1; i++)
+	{
+		InvisibleObject* invObj = new InvisibleObject("Bust.cmo", m_pd3dDevice, m_fxFactory, Vector3::Zero, 0.0f, 4.7f, 0.0f, 0.25f * Vector3(100.0f));
+		m_invObj.push_back(invObj);
+	}
 	initTweakBar(); 
 }
 
@@ -66,6 +70,11 @@ void BoidManager::InitialiseBoidPos()
 
 void BoidManager::Tick(GameData* _GD, DrawData* _DD)
 {
+	for (int i = 0; i < m_invObj.size(); ++i)
+	{
+		m_invObj[i]->SetPos(Vector3(xPos, xPos, xPos));
+	}
+	//std::cout << m_invObj[0]->GetPos().x; 
 	UpdateBoidPos(_DD, _GD);
 	//apply my base behaviour
 }
@@ -101,7 +110,7 @@ Vector3 BoidManager::Separation(int thisBoid)
 		if (i != thisBoid && m_boids[i]->getAlive() == true)
 		{
 			float distance = Vector3::Distance(m_boids[i]->GetPos(), m_boids[thisBoid]->GetPos());
-			if (distance < seperationDistance)
+			if (distance < (seperationDistance * 10))
 			{
 				seperationForce = seperationForce - (m_boids[i]->GetPos() - m_boids[thisBoid]->GetPos());
 			}
@@ -123,7 +132,7 @@ Vector3 BoidManager::Alignment(int thisBoid)
 	if (boidsAlive != 1)
 	{
 		percievedVelocity = percievedVelocity / (boidsAlive - 1); 
-		return ((percievedVelocity - m_boids[thisBoid]->getVelocity()) / alignmentForce);
+		return ((percievedVelocity - m_boids[thisBoid]->getVelocity()) * alignmentForce);
 	}
 	return Vector3::Zero;
 }
@@ -151,7 +160,7 @@ Vector3 BoidManager::Cohesion(int thisBoid)
 
 Vector3 BoidManager::Homing(int thisBoid)
 {
-	Vector3 home = Vector3::Zero;
+	Vector3 home = m_invObj[0]->GetPos(); 
 	//Always passively head home
 	return home - m_boids[thisBoid]->GetPos() * homingInstinct;
 }
@@ -178,6 +187,10 @@ float BoidManager::getHoming()
 
 void BoidManager::DrawBoids(DrawData* _DD)
 {
+	for (int i = 0; i < m_invObj.size(); ++i)
+	{
+		m_invObj[i]->Draw(_DD);
+	}
 	for (int i = 0; i < m_boids.size(); ++i)
 	{
 		if (m_boids[i]->getAlive() == true)
@@ -192,13 +205,13 @@ void BoidManager::initTweakBar()
 	TwBar* p_myBar;
 	p_myBar = TwGetBarByName("Boid Settings");
 	
-	TwAddVarRW(p_myBar, "Alignment", TW_TYPE_FLOAT, &alignmentForce, "min = 0.1 max = 10 step = 0.1");
-	TwAddVarRW(p_myBar, "Cohesion", TW_TYPE_FLOAT, &percentCohesion, "min = 0 max = 1 step = 0.01");
-	TwAddVarRW(p_myBar, "Seperation", TW_TYPE_FLOAT, &seperationDistance, "min = 0 max = 10 step = 0.1");
-	TwAddVarRW(p_myBar, "Homing", TW_TYPE_FLOAT, &homingInstinct, "min = 0 max = 1 step = 0.01");
-	TwAddVarRW(p_myBar, "Acceleration", TW_TYPE_FLOAT, &maxAcc, "min = 0.01 max = 1 step = 0.01");
+	TwAddVarRW(p_myBar, "Alignment",    TW_TYPE_FLOAT, &alignmentForce,     "min = 0    max = 1 step = 0.01  group=Boids");
+	TwAddVarRW(p_myBar, "Cohesion",     TW_TYPE_FLOAT, &percentCohesion,    "min = 0    max = 1 step = 0.01  group=Boids");
+	TwAddVarRW(p_myBar, "Seperation",   TW_TYPE_FLOAT, &seperationDistance, "min = 0    max = 1 step = 0.01   group=Boids");
+	TwAddVarRW(p_myBar, "Homing",       TW_TYPE_FLOAT, &homingInstinct,     "min = 0    max = 1 step = 0.001 group=Boids");
+	TwAddVarRW(p_myBar, "Acceleration", TW_TYPE_FLOAT, &maxAcc,             "min = 0.01 max = 1 step = 0.01  group=Boids");
+	TwAddVarRW(p_myBar, "xPos",         TW_TYPE_FLOAT, &xPos,               "min = 0    max = 100 step = 1 group=Object");
 	/*TwAddVarRW(p_myBar, "NameOfMyVariable", TW_TYPE_FLOAT, &alignmentForce, "");
-	TwAddVarRW(p_myBar, "NameOfMyVariable", TW_TYPE_FLOAT, &alignmentForce, "");
 	TwAddVarRW(p_myBar, "NameOfMyVariable", TW_TYPE_FLOAT, &alignmentForce, "");
 	TwAddVarRW(p_myBar, "NameOfMyVariable", TW_TYPE_FLOAT, &alignmentForce, "");
 	TwAddVarRW(p_myBar, "NameOfMyVariable", TW_TYPE_FLOAT, &alignmentForce, "");*/

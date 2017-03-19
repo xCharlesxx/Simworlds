@@ -73,7 +73,7 @@ protected:
 	
 	//Tick functions for each state
 	void PlayTick();
-	int zoomPos = 100; 
+	int zoomPos = 400; 
 };
 
 
