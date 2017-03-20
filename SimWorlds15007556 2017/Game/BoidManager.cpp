@@ -205,12 +205,12 @@ void BoidManager::initTweakBar()
 	TwBar* p_myBar;
 	p_myBar = TwGetBarByName("Boid Settings");
 	
-	TwAddVarRW(p_myBar, "Alignment",    TW_TYPE_FLOAT, &alignmentForce,     "min = 0    max = 1 step = 0.01  group=Boids");
-	TwAddVarRW(p_myBar, "Cohesion",     TW_TYPE_FLOAT, &percentCohesion,    "min = 0    max = 1 step = 0.01  group=Boids");
-	TwAddVarRW(p_myBar, "Seperation",   TW_TYPE_FLOAT, &seperationDistance, "min = 0    max = 1 step = 0.01   group=Boids");
-	TwAddVarRW(p_myBar, "Homing",       TW_TYPE_FLOAT, &homingInstinct,     "min = 0    max = 1 step = 0.001 group=Boids");
-	TwAddVarRW(p_myBar, "Acceleration", TW_TYPE_FLOAT, &maxAcc,             "min = 0.01 max = 1 step = 0.01  group=Boids");
-	TwAddVarRW(p_myBar, "xPos",         TW_TYPE_FLOAT, &xPos,               "min = 0    max = 100 step = 1 group=Object");
+	TwAddVarRW(p_myBar, "Alignment",    TW_TYPE_FLOAT, &alignmentForce,     "min = 0    max = 1   step = 0.01   group=Boids");
+	TwAddVarRW(p_myBar, "Cohesion",     TW_TYPE_FLOAT, &percentCohesion,    "min = 0    max = 1   step = 0.01   group=Boids");
+	TwAddVarRW(p_myBar, "Seperation",   TW_TYPE_FLOAT, &seperationDistance, "min = 0    max = 1   step = 0.01   group=Boids");
+	TwAddVarRW(p_myBar, "Homing",       TW_TYPE_FLOAT, &homingInstinct,     "min = 0    max = 1   step = 0.001  group=Boids");
+	TwAddVarRW(p_myBar, "Acceleration", TW_TYPE_FLOAT, &maxAcc,             "min = 0.01 max = 1   step = 0.01   group=Boids");
+	TwAddVarRW(p_myBar, "xPos",         TW_TYPE_FLOAT, &xPos,               "min = 0    max = 100 step = 1      group=Object");
 	/*TwAddVarRW(p_myBar, "NameOfMyVariable", TW_TYPE_FLOAT, &alignmentForce, "");
 	TwAddVarRW(p_myBar, "NameOfMyVariable", TW_TYPE_FLOAT, &alignmentForce, "");
 	TwAddVarRW(p_myBar, "NameOfMyVariable", TW_TYPE_FLOAT, &alignmentForce, "");

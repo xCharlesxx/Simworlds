@@ -72,16 +72,16 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>..\Bin\Desktop_2015\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>..\Bin\Desktop_2015\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>C:\Users\Charles\Documents\GitHub\Simworlds\SimWorlds15007556 2017\AntTweakBar\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Charles\Documents\GitHub\Simworlds\SimWorlds15007556 2017\AntTweakBar\lib;$(LibraryPath)</LibraryPath>
-    <SourcePath>C:\Users\Charles\Documents\GitHub\Simworlds\SimWorlds15007556 2017\AntTweakBar\src;$(SourcePath)</SourcePath>
+    <IncludePath>E:\Charlie\Simworlds\SimWorlds15007556 2017\AntTweakBar\include;$(IncludePath)</IncludePath>
+    <LibraryPath>E:\Charlie\Simworlds\SimWorlds15007556 2017\AntTweakBar\lib;$(LibraryPath)</LibraryPath>
+    <SourcePath>E:\Charlie\Simworlds\SimWorlds15007556 2017\AntTweakBar\src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>..\Bin\Desktop_2015\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>..\Bin\Desktop_2015\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>C:\Users\Charles\Documents\GitHub\Simworlds\SimWorlds15007556 2017\AntTweakBar\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Charles\Documents\GitHub\Simworlds\SimWorlds15007556 2017\AntTweakBar\lib;$(LibraryPath)</LibraryPath>
-    <SourcePath>C:\Users\Charles\Documents\GitHub\Simworlds\SimWorlds15007556 2017\AntTweakBar\src;$(SourcePath)</SourcePath>
+    <IncludePath>$(SolutionDir)AntTweakBar\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)AntTweakBar\lib;$(LibraryPath)</LibraryPath>
+    <SourcePath>$(SolutionDir)AntTweakBar\src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
