@@ -141,6 +141,9 @@
     <ClInclude Include="InvisibleObject.h">
       <Filter>Objects\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="BoidSettings.h">
+      <Filter>Base\Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">

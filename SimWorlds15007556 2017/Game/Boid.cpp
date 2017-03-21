@@ -3,14 +3,16 @@
 #include "GameData.h"
 #include <iostream>
 #include <ctime>
-Boid::Boid(ID3D11Device* _pd3dDevice)
+#include "BoidSettings.h"
+#include <vector>
+
+Boid::Boid(ID3D11Device* _pd3dDevice, std::vector<BoidSettings*> &_typeList):m_typelist(_typeList)
 {
 	int randx = rand() % 20 - 10;
 	int randy = rand() % 20 - 10;
 	int randz = rand() % 20 - 10;
 	m_pos = Vector3(randx, randy, randz);
 	velocity = Vector3::Zero;
-
 	int numVerts = 3;
 	int vert = 0; 
 	m_numPrims = numVerts / 3;
@@ -46,10 +48,9 @@ Boid::Boid(ID3D11Device* _pd3dDevice)
 		m_vertices[V2].Norm = norm;
 		m_vertices[V3].Norm = norm;
 	}
-
+	
 	BuildIB(_pd3dDevice, indices);
 	BuildVB(_pd3dDevice, numVerts, m_vertices);
-
 	delete[] indices;    //this is no longer needed as this is now in the index Buffer
 	delete[] m_vertices; //this is no longer needed as this is now in the Vertex Buffer
 	m_vertices = nullptr;
@@ -69,15 +70,6 @@ void Boid::Update(GameData* _GD, Vector3 m_force)
 	Matrix  scaleMat = Matrix::CreateScale(m_scale);
 	Matrix  transMat = Matrix::CreateTranslation(m_pos);
 	m_worldMat = m_fudge * scaleMat * m_rotMat * transMat;
-	/*std::cout << "Velocity is currently: (";
-	std::cout << velocity.x;
-	std::cout << ", ";
-	std::cout << velocity.y;
-	std::cout << ", ";
-	std::cout << velocity.z;
-	std::cout << ")\n";*/
-	//outputBoidPos(); 
-	//VBGO::Tick(_GD);
 }
 
 void Boid::Draw(DrawData * _DD)
@@ -100,6 +92,32 @@ void Boid::setAlive(bool alive)
 	isAlive = alive; 
 }
 
+float Boid::getSeperation()
+{
+	return m_typelist[type]->seperationDistance; 
+}
+
+float Boid::getCohesion()
+{
+	return m_typelist[type]->percentCohesion;
+}
+
+float Boid::getAlignment()
+{
+	return m_typelist[type]->alignmentForce;
+}
+
+float Boid::getHoming()
+{
+	return m_typelist[type]->homingInstinct;
+}
+
+float Boid::getAcc()
+{
+	return m_typelist[type]->maxAcc;
+}
+
+
 void Boid::outputBoidPos()
 {
 	std::cout << "The Coordinates for this boid is: (";
@@ -109,4 +127,13 @@ void Boid::outputBoidPos()
 	std::cout << ", ";
 	std::cout << this->m_pos.z;
 	std::cout << ")\n";
+}
+
+void Boid::setBoid(float sep, float coh, float ali, float hom, float acc)
+{
+	m_typelist[type]->seperationDistance = sep;
+	m_typelist[type]->percentCohesion = coh;
+	m_typelist[type]->alignmentForce = ali;
+	m_typelist[type]->homingInstinct = hom;
+	m_typelist[type]->maxAcc = acc;
 }
