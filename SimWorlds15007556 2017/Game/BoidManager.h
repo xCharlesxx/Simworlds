@@ -21,6 +21,7 @@ public:
 	void SpawnBoid();
 	void ToggleHoming(); 
 	void initTweakBar(); 
+	void RemoveBar(); 
 	Vector3 Separation(int thisBoid);
 	Vector3 Alignment(int thisBoid);
 	Vector3 Cohesion(int thisBoid); 
@@ -36,6 +37,7 @@ protected:
 	vector<Boid*> m_boids; 
 	vector<InvisibleObject*> m_invObj; 
 	int boidsAlive = 0; 
+	int clanNum = 0; 
 	float percentCohesion = 0.1; 
 	float seperationDistance = 0.05; 
 	float homingInstinct = 0.005;

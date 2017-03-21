@@ -204,16 +204,33 @@ void BoidManager::initTweakBar()
 {
 	TwBar* p_myBar;
 	p_myBar = TwGetBarByName("Boid Settings");
-	
-	TwAddVarRW(p_myBar, "Alignment",    TW_TYPE_FLOAT, &alignmentForce,     "min = 0    max = 1   step = 0.01   group=Boids");
-	TwAddVarRW(p_myBar, "Cohesion",     TW_TYPE_FLOAT, &percentCohesion,    "min = 0    max = 1   step = 0.01   group=Boids");
-	TwAddVarRW(p_myBar, "Seperation",   TW_TYPE_FLOAT, &seperationDistance, "min = 0    max = 1   step = 0.01   group=Boids");
-	TwAddVarRW(p_myBar, "Homing",       TW_TYPE_FLOAT, &homingInstinct,     "min = 0    max = 1   step = 0.001  group=Boids");
-	TwAddVarRW(p_myBar, "Acceleration", TW_TYPE_FLOAT, &maxAcc,             "min = 0.01 max = 1   step = 0.01   group=Boids");
-	TwAddVarRW(p_myBar, "xPos",         TW_TYPE_FLOAT, &xPos,               "min = 0    max = 100 step = 1      group=Object");
+	string prefix = std::to_string(clanNum);
+	TwAddVarRW(p_myBar, ("Num Boids    " + prefix).c_str(),       TW_TYPE_FLOAT, &boidsAlive,         ("min = 0    max = "+std::to_string(boidPool)+"   step = 1   group=Boids" + prefix).c_str());
+	TwAddVarRW(p_myBar, ("Alignment    " + prefix).c_str(),       TW_TYPE_FLOAT, &alignmentForce,     ("min = 0    max = 1   step = 0.01   group=Boids" + prefix).c_str());
+	TwAddVarRW(p_myBar, ("Cohesion     " + prefix).c_str(),       TW_TYPE_FLOAT, &percentCohesion,    ("min = 0    max = 1   step = 0.01   group=Boids" + prefix).c_str());
+	TwAddVarRW(p_myBar, ("Seperation   " + prefix).c_str(),       TW_TYPE_FLOAT, &seperationDistance, ("min = 0    max = 1   step = 0.01   group=Boids" + prefix).c_str());
+	TwAddVarRW(p_myBar, ("Homing       " + prefix).c_str(),       TW_TYPE_FLOAT, &homingInstinct,     ("min = 0    max = 1   step = 0.001  group=Boids" + prefix).c_str());
+	TwAddVarRW(p_myBar, ("Acceleration " + prefix).c_str(),       TW_TYPE_FLOAT, &maxAcc,             ("min = 0.01 max = 1   step = 0.01   group=Boids" + prefix).c_str());
+	//TwAddVarRW(p_myBar, "xPos",         TW_TYPE_FLOAT, &xPos,               "min = 0    max = 100 step = 1      group=Object");
 	/*TwAddVarRW(p_myBar, "NameOfMyVariable", TW_TYPE_FLOAT, &alignmentForce, "");
 	TwAddVarRW(p_myBar, "NameOfMyVariable", TW_TYPE_FLOAT, &alignmentForce, "");
 	TwAddVarRW(p_myBar, "NameOfMyVariable", TW_TYPE_FLOAT, &alignmentForce, "");
 	TwAddVarRW(p_myBar, "NameOfMyVariable", TW_TYPE_FLOAT, &alignmentForce, "");*/
-
+	clanNum++; 
+}
+void BoidManager::RemoveBar()
+{
+	if (clanNum != 0)
+	{
+		clanNum--;
+		TwBar* p_myBar;
+		p_myBar = TwGetBarByName("Boid Settings");
+		string prefix = std::to_string(clanNum);
+		TwRemoveVar(p_myBar, ("Num Boids    " + prefix).c_str());
+		TwRemoveVar(p_myBar, ("Alignment    " + prefix).c_str());
+		TwRemoveVar(p_myBar, ("Cohesion     " + prefix).c_str());
+		TwRemoveVar(p_myBar, ("Seperation   " + prefix).c_str());
+		TwRemoveVar(p_myBar, ("Homing       " + prefix).c_str());
+		TwRemoveVar(p_myBar, ("Acceleration " + prefix).c_str());
+	}
 }

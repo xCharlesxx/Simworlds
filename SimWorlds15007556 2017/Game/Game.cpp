@@ -312,6 +312,14 @@ void Game::PlayTick()
 	{
 		m_boidManager->ToggleHoming(); 
 	}
+	if ((m_keyboardState[DIK_N] & 0x80) && !(m_prevKeyboardState[DIK_N] & 0x80))
+	{
+		m_boidManager->initTweakBar(); 
+	}
+	if ((m_keyboardState[DIK_R] & 0x80) && !(m_prevKeyboardState[DIK_R] & 0x80))
+	{
+		m_boidManager->RemoveBar(); 
+	}
 	if (m_GD->m_mouseState->lZ > 0.0f)
 	{
 		m_cam->SetPos(Vector3(0.0f, zoomPos-=10, zoomPos-=10));
