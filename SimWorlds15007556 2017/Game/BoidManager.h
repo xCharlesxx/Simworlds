@@ -19,16 +19,19 @@ public:
 	void UpdateBoidPos(DrawData* _DD, GameData* _GD);
 	void InitialiseBoidPos(); 
 	void DrawBoids(DrawData* _DD);
-	void SpawnBoid();
-	void KillBoid(); 
+	bool SpawnBoid(int type);
+	bool KillBoid(int type); 
 	void ToggleHoming(); 
 	void initTweakBar(); 
 	void RemoveBar(); 
+	void AdjustBoidCounts(); 
+	float RandomNumber(); 
 	Vector3 Separation(int thisBoid);
 	Vector3 Alignment(int thisBoid);
 	Vector3 Cohesion(int thisBoid); 
 	Vector3 Homing(int thisBoid); 
-	
+	void DebugPrint(); 
+	bool once = false;
 protected:
 	IEffectFactory* m_fxFactory;
 	ID3D11Device* m_pd3dDevice;
@@ -37,7 +40,6 @@ protected:
 	vector<InvisibleObject*> m_invObj; 
 	vector<BoidSettings*> typeList;
 	int boidsAlive = 0; 
-	int requestBoids = 0; 
 	int clanNum = 0; 
 	const int boidPool = 1000; 
 	int x = 0; 
@@ -49,4 +51,5 @@ protected:
 	//Larger = less force
 	float alignmentForce = 0.15;
 	float maxAcc = 0.1;
+
 };

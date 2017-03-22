@@ -6,7 +6,7 @@
 #include "BoidSettings.h"
 #include <vector>
 
-Boid::Boid(ID3D11Device* _pd3dDevice, std::vector<BoidSettings*> &_typeList):m_typelist(_typeList)
+Boid::Boid(ID3D11Device* _pd3dDevice, int type, std::vector<BoidSettings*> &_typeList):m_typelist(_typeList)
 {
 	int randx = rand() % 20 - 10;
 	int randy = rand() % 20 - 10;
@@ -23,14 +23,16 @@ Boid::Boid(ID3D11Device* _pd3dDevice, std::vector<BoidSettings*> &_typeList):m_t
 		indices[i] = i;
 		m_vertices[i].texCoord = Vector2::One;
 	}
-	m_vertices[0].Color = Color(1.0f, 0.0f, 0.0f, 1.0f);
+//	m_vertices[2].Color = Color(1.0f, 0.0f, 0.0f, 1.0f);
+//	m_vertices[1].Color = Color(1.0f, 0.0f, 0.0f, 1.0f);
+//	m_vertices[0].Color = Color(1.0f, 0.0f, 0.0f, 1.0f);
+	m_type = type; 
 	m_vertices[0].Pos = Vector3(0.0f, 0.0f, 0.0f);
-	m_vertices[1].Color = Color(1.0f, 0.0f, 0.0f, 1.0f);
 	m_vertices[1].Pos = Vector3(0.0f, 0.0f, 2.0f);
-	m_vertices[2].Color = Color(1.0f, 0.0f, 0.0f, 1.0f);
 	m_vertices[2].Pos = Vector3(3.0f, 0.0f, 1.0f);
-
-
+	m_vertices[0].Color = Color(m_typelist[m_type]->colour);
+	m_vertices[1].Color = Color(m_typelist[m_type]->colour);
+	m_vertices[2].Color = Color(m_typelist[m_type]->colour);
 	for (int i = 0; i< m_numPrims; i++)
 	{
 		WORD V1 = 3 * i;
@@ -94,27 +96,32 @@ void Boid::setAlive(bool alive)
 
 float Boid::getSeperation()
 {
-	return m_typelist[type]->seperationDistance; 
+	return m_typelist[m_type]->seperationDistance; 
 }
 
 float Boid::getCohesion()
 {
-	return m_typelist[type]->percentCohesion;
+	return m_typelist[m_type]->percentCohesion;
 }
 
 float Boid::getAlignment()
 {
-	return m_typelist[type]->alignmentForce;
+	return m_typelist[m_type]->alignmentForce;
 }
 
 float Boid::getHoming()
 {
-	return m_typelist[type]->homingInstinct;
+	return m_typelist[m_type]->homingInstinct;
 }
 
 float Boid::getAcc()
 {
-	return m_typelist[type]->maxAcc;
+	return m_typelist[m_type]->maxAcc;
+}
+
+int Boid::getType()
+{
+	return m_type;
 }
 
 
@@ -127,13 +134,4 @@ void Boid::outputBoidPos()
 	std::cout << ", ";
 	std::cout << this->m_pos.z;
 	std::cout << ")\n";
-}
-
-void Boid::setBoid(float sep, float coh, float ali, float hom, float acc)
-{
-	m_typelist[type]->seperationDistance = sep;
-	m_typelist[type]->percentCohesion = coh;
-	m_typelist[type]->alignmentForce = ali;
-	m_typelist[type]->homingInstinct = hom;
-	m_typelist[type]->maxAcc = acc;
 }

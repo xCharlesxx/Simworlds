@@ -13,7 +13,7 @@ class Boid : public VBGO
 {
 
 public:
-	Boid(ID3D11Device* _pd3dDevice, std::vector<BoidSettings*> &typeList);
+	Boid(ID3D11Device* _pd3dDevice, int type, std::vector<BoidSettings*> &typeList);
 	~Boid();
 	void Update(GameData* _GD, Vector3 m_force);
 	virtual void Draw(DrawData* _DD) override;
@@ -21,17 +21,17 @@ public:
 	Vector3 getVelocity(); 
 	void setAlive(bool alive); 
 	void outputBoidPos(); 
-	void setBoid(float sep, float coh, float ali, float hom, float acc);
 	float getSeperation();
 	float getCohesion();
 	float getAlignment();
 	float getHoming();
 	float getAcc(); 
+	int getType(); 
 protected:
 	int m_size;
-	int type = 0; 
+	int m_type = 0; 
 	Vector3 velocity; 
 	myVertex* m_vertices;
-	bool isAlive = false; 
+	bool isAlive = true; 
 	std::vector<BoidSettings*>& m_typelist;
 };
