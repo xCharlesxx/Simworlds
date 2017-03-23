@@ -179,7 +179,7 @@ Vector3 BoidManager::Separation(int thisBoid)
 			//If not of my flock
 			if (m_boids[thisBoid]->getType() != m_boids[i]->getType())
 			{
-				seperationForce += seperationForce*0.1; 
+				seperationForce += seperationForce*0.5; 
 			}
 		}
 	}
