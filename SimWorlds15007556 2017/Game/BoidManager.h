@@ -26,19 +26,19 @@ public:
 	void RemoveBar(); 
 	void AdjustBoidCounts(); 
 	float RandomNumber(); 
-	Vector3 Separation(int thisBoid);
-	Vector3 Alignment(int thisBoid);
-	Vector3 Cohesion(int thisBoid); 
-	Vector3 Homing(int thisBoid); 
+	Vector3 Separation(int thisBoid, int type);
+	Vector3 Alignment(int thisBoid, int type);
+	Vector3 Cohesion(int thisBoid, int type);
+	Vector3 Homing(int thisBoid, int type);
 	void DebugPrint(); 
 	bool once = false;
 protected:
 	IEffectFactory* m_fxFactory;
 	ID3D11Device* m_pd3dDevice;
 	string m_fileName; 
-	vector<Boid*> m_boids; 
 	vector<InvisibleObject*> m_invObj; 
 	vector<BoidSettings*> typeList;
+	vector<Boid*> allBoids;
 	int boidsAlive = 0; 
 	int clanNum = 0; 
 	const int boidPool = 1000; 

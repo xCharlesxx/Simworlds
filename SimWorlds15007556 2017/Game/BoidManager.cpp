@@ -16,8 +16,8 @@ BoidManager::BoidManager(string _fileName, ID3D11Device* _pd3dDevice, IEffectFac
 	m_fxFactory = _EF; 
 	m_pd3dDevice = _pd3dDevice; 
 	m_fileName = _fileName; 
-	m_boids.reserve(boidPool);
 	initTweakBar();
+	allBoids.reserve(10000); 
 	/*for (int i = 0; i < boidPool; i++)
 	{
 		Boid* boid = new Boid(m_pd3dDevice, typeList);
@@ -37,12 +37,11 @@ BoidManager::~BoidManager()
 
 bool BoidManager::SpawnBoid(int type)
 {
-	//for (int i = 0; i < boidPool; i++)
-	//{
-		//auto boid = make_unique<Boid>(m_pd3dDevice, typeList);
 	Boid* boid = new Boid(m_pd3dDevice, type, typeList);
-	m_boids.push_back(boid);
+	typeList[type]->m_boids.push_back(boid);
+	allBoids.push_back(boid); 
 	boidsAlive++; 
+	typeList[type]->boidsOfType++; 
 	cout << "Boid Created of type ";
 	cout << type;
 	cout << "\n";
@@ -68,12 +67,27 @@ bool BoidManager::SpawnBoid(int type)
 bool BoidManager::KillBoid(int type)
 {
 	vector<Boid*>::iterator it;
-	for (it = m_boids.begin(); it != m_boids.end();)
+	vector<Boid*>::iterator itr;
+	//Go through boids of specific type
+	for (it = typeList[type]->m_boids.begin(); it != typeList[type]->m_boids.end();)
 	{
+		//Check if this is needed anymore
 		if ((*it)->getType() == type)
 		{
-			delete * it;
-			it = m_boids.erase(it);
+			//Erase boid from m_boids
+			delete *it;
+			it = typeList[type]->m_boids.erase(it);
+			for (itr = allBoids.begin(); itr != allBoids.end();)
+			{
+				if ((*itr) == (*it))
+				{
+					//Erase boid pointer from allBoids
+					delete *itr; 
+					itr = allBoids.erase(itr); 
+				}
+				itr++; 
+			}
+			typeList[type]->boidsOfType--;
 			boidsAlive--; 
 			cout << "Boid Destroyed of type ";
 			cout << type; 
@@ -146,39 +160,49 @@ void BoidManager::UpdateBoidPos(DrawData* _DD, GameData* _GD)
 	Vector3 v2 = Vector3::Zero;
 	Vector3 v3 = Vector3::Zero;
 	Vector3 v4 = Vector3::Zero;
-	for (int i = 0; i < m_boids.size(); ++i)
+	for (int x = 0; x < typeList.size(); ++x)
 	{
-		if (m_boids[i]->getAlive() == true)
+		//Get typelist
+		for (int i = 0; i < typeList[x]->m_boids.size(); ++i)
 		{
-			//m_boids[i]->setBoid(seperationDistance, percentCohesion, alignmentForce, homingInstinct, maxAcc);
-			v1 = Separation(i);
-			v2 = Alignment(i);
-			v3 = Cohesion(i);
-			if (homing == true)
-			v4 = Homing(i); 
-			Vector3 velocity = v1 + v2 + v3 + v4;
-			Vector3 acceleration = velocity * _GD->m_dt;
-			acceleration = XMVector3ClampLength(acceleration, 0.0, m_boids[i]->getAcc());
-			m_boids[i]->Update(_GD, acceleration);
+			//GetBoidNum
+			if (typeList[x]->m_boids[i]->getAlive() == true)
+			{
+				v1 = Separation(i, x);
+				v2 = Alignment(i, x);
+				v3 = Cohesion(i, x);
+				if (homing == true)
+					v4 = Homing(i, x);
+				Vector3 velocity = v1 + v2 + v3 + v4;
+				Vector3 acceleration = velocity * _GD->m_dt;
+				acceleration = XMVector3ClampLength(acceleration, 0.0, typeList[x]->m_boids[i]->getAcc());
+				typeList[x]->m_boids[i]->Update(_GD, acceleration);
+			}
 		}
 	}
 }
 
-Vector3 BoidManager::Separation(int thisBoid)
+Vector3 BoidManager::Separation(int thisBoid, int type)
 {
 	Vector3 seperationForce = Vector3::Zero; 
-	for (int i = 0; i < m_boids.size(); ++i)
+	// Loop through boids
+	for (int i = 0; i < allBoids.size(); ++i)
 	{
-		if (i != thisBoid && m_boids[i]->getAlive() == true )
+		//If boid != thisBoid && boid is alive 
+		if (allBoids[i] != typeList[type]->m_boids[thisBoid] && allBoids[i]->getAlive() == true )
 		{
-			float distance = Vector3::Distance(m_boids[i]->GetPos(), m_boids[thisBoid]->GetPos());
-			if (distance < (m_boids[i]->getSeperation() * 10))
+			//Distance between boid and thisBoid
+			float distance = Vector3::Distance(allBoids[i]->GetPos(), typeList[type]->m_boids[thisBoid]->GetPos());
+			//If distance is less than set seperation distance
+			if (distance < (typeList[type]->m_boids[i]->getSeperation() * 10))
 			{
-				seperationForce = seperationForce - (m_boids[i]->GetPos() - m_boids[thisBoid]->GetPos());
+				//Apply seperation force  -= (boid pos - thisBoid pos)   
+				seperationForce -= (allBoids[i]->GetPos() - typeList[type]->m_boids[thisBoid]->GetPos());
 			}
 			//If not of my flock
-			if (m_boids[thisBoid]->getType() != m_boids[i]->getType())
+			if (allBoids[i]->getType() != typeList[type]->m_boids[thisBoid]->getType())
 			{
+				//Amplify seperation force
 				seperationForce += seperationForce*0.5; 
 			}
 		}
@@ -186,54 +210,51 @@ Vector3 BoidManager::Separation(int thisBoid)
 	return seperationForce;
 }
 
-Vector3 BoidManager::Alignment(int thisBoid)
+Vector3 BoidManager::Alignment(int thisBoid, int type)
 {
 	Vector3 percievedVelocity = Vector3::Zero; 
-	int boidsInClan = 0; 
-	for (int i = 0; i < m_boids.size(); ++i)
+	for (int i = 0; i < typeList[type]->m_boids.size(); ++i)
 	{
-		if (i != thisBoid && m_boids[i]->getAlive() == true && m_boids[thisBoid]->getType() == m_boids[i]->getType())
+		//If boid isn't ThisBoid && if boid is alive && if boid is in the same clan
+		if (allBoids[i] != typeList[type]->m_boids[thisBoid] && typeList[type]->m_boids[i]->getAlive() == true && typeList[type]->m_boids[i]->getType() == typeList[type]->m_boids[thisBoid]->getType())
 		{
-			percievedVelocity = percievedVelocity + m_boids[i]->getVelocity(); 
-			boidsInClan++; 
+			percievedVelocity = percievedVelocity + typeList[type]->m_boids[i]->getVelocity();
 		}
 	}
-	if (boidsInClan != 1)
+	if (typeList[type]->boidsOfType != 1)
 	{
-		percievedVelocity = percievedVelocity / (boidsInClan - 1); 
-		return ((percievedVelocity - m_boids[thisBoid]->getVelocity()) * m_boids[thisBoid]->getAlignment());
+		percievedVelocity = percievedVelocity / (typeList[type]->boidsOfType - 1);
+		return ((percievedVelocity - typeList[type]->m_boids[thisBoid]->getVelocity()) * typeList[type]->m_boids[thisBoid]->getAlignment());
 	}
 	return Vector3::Zero;
 }
 
-Vector3 BoidManager::Cohesion(int thisBoid)
+Vector3 BoidManager::Cohesion(int thisBoid, int type)
 {
 	Vector3 centerOfMass = Vector3::Zero; 
-	int boidsInClan = 0;
-	for (int i = 0; i < m_boids.size(); ++i)
+	for (int i = 0; i < typeList[type]->m_boids.size(); ++i)
 	{
 		//Do not include this boid in center of mass calculation
-		if (i != thisBoid && m_boids[i]->getAlive() == true && m_boids[thisBoid]->getType() == m_boids[i]->getType())
+		if (i != thisBoid && typeList[type]->m_boids[i]->getAlive() == true && typeList[type]->m_boids[thisBoid]->getType() == typeList[type]->m_boids[i]->getType())
 		{
-			centerOfMass += m_boids[i]->GetPos();
-			boidsInClan++; 
+			centerOfMass += typeList[type]->m_boids[i]->GetPos();
 		}
 	}
 	//Stop Dividing by Zero
-	if (boidsInClan != 1)
+	if (typeList[type]->boidsOfType != 1)
 	{
-		centerOfMass = centerOfMass / (boidsInClan - 1);
+		centerOfMass = centerOfMass / (typeList[type]->boidsOfType - 1);
 		//Move boids a percentage towards the center of the group
-		return (centerOfMass - m_boids[thisBoid]->GetPos()) *  m_boids[thisBoid]->getCohesion();
+		return (centerOfMass - typeList[type]->m_boids[thisBoid]->GetPos()) *  typeList[type]->m_boids[thisBoid]->getCohesion();
 	}
 	return Vector3::Zero; 
 }
 
-Vector3 BoidManager::Homing(int thisBoid)
+Vector3 BoidManager::Homing(int thisBoid, int type)
 {
 	Vector3 home = m_invObj[0]->GetPos(); 
 	//Always passively head home
-	return home - m_boids[thisBoid]->GetPos() *  m_boids[thisBoid]->getHoming();
+	return home - typeList[type]->m_boids[thisBoid]->GetPos() *  typeList[type]->m_boids[thisBoid]->getHoming();
 }
 
 void BoidManager::DrawBoids(DrawData* _DD)
@@ -242,11 +263,11 @@ void BoidManager::DrawBoids(DrawData* _DD)
 	{
 		//m_invObj[i]->Draw(_DD);
 	}
-	for (int i = 0; i < m_boids.size(); ++i)
+	for (int i = 0; i < allBoids.size(); ++i)
 	{
-		if (m_boids[i]->getAlive() == true)
+		if (allBoids[i]->getAlive() == true)
 		{
-			m_boids[i]->Draw(_DD);
+			allBoids[i]->Draw(_DD);
 		}
 	}
 }
@@ -270,6 +291,7 @@ void BoidManager::initTweakBar()
 	TwAddVarRW(p_myBar, "NameOfMyVariable", TW_TYPE_FLOAT, &alignmentForce, "");*/
 	clanNum++; 
 	BS->colour = Vector4(RandomNumber(), RandomNumber(), RandomNumber(), 1);
+	BS->m_boids.reserve(boidPool);
 	typeList.push_back(BS); 
 }
 
@@ -309,7 +331,7 @@ void BoidManager::AdjustBoidCounts()
 	for (int i = 0; i < typeList.size(); ++i)
 	{
 		//If Boids are Requested
-		if (typeList[i]->requestedSpecialBoid > typeList[i]->boidsInClan)
+		if (typeList[i]->requestedSpecialBoid > typeList[i]->boidsOfType)
 		{
 			//Check if boid pool is full
 			if (typeList[i]->requestedSpecialBoid > boidPool)
@@ -319,20 +341,20 @@ void BoidManager::AdjustBoidCounts()
 			{
 				if (!SpawnBoid(i))
 					break;
-				typeList[i]->boidsInClan++; 
+				typeList[i]->boidsOfType++; 
 			}
 		}
 	}
 	//De-Spawn Boids
 	for (int i = 0; i < typeList.size(); ++i)
 	{
-		if (typeList[i]->requestedSpecialBoid < typeList[i]->boidsInClan)
+		if (typeList[i]->requestedSpecialBoid < typeList[i]->boidsOfType)
 		{
 			while (typeList[i]->requestedSpecialBoid < boidsAlive)
 			{
 				if (!KillBoid(i))
 					break;
-				typeList[i]->boidsInClan--;
+				typeList[i]->boidsOfType--;
 			}
 		}
 	}
@@ -357,13 +379,13 @@ void BoidManager::DebugPrint()
 		cout << "Boids alive ";
 		cout << boidsAlive;
 		cout << "\nZero Boids ";
-		cout << typeList[0]->boidsInClan; 
+		cout << typeList[0]->boidsOfType; 
 		cout << "\nOne Boids ";
 		if (typeList.size() > 1)
-		cout << typeList[1]->boidsInClan;
+		cout << typeList[1]->boidsOfType;
 		cout << "\nTwo Boids ";
 		if (typeList.size() > 2)
-		cout << typeList[2]->boidsInClan;
+		cout << typeList[2]->boidsOfType;
 		cout << "\n";
 		once = true;
 	}

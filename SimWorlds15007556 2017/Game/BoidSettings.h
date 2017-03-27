@@ -1,8 +1,10 @@
 #pragma once
+#include <vector>
 
 struct BoidSettings
 {
-	int boidsInClan = 0; 
+	std::vector<Boid*> m_boids;
+	int boidsOfType = 0; 
 	int requestedSpecialBoid = 0; 
 	float percentCohesion = 0.1;
 	float seperationDistance = 0.05;
