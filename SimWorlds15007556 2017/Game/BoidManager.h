@@ -38,7 +38,7 @@ protected:
 	string m_fileName; 
 	vector<InvisibleObject*> m_invObj; 
 	vector<BoidSettings*> typeList;
-	vector<Boid*> allBoids;
+	typedef Boid* boidOfType;
 	int boidsAlive = 0; 
 	int clanNum = 0; 
 	const int boidPool = 1000; 
@@ -48,6 +48,7 @@ protected:
 	float percentCohesion = 0.1;
 	float seperationDistance = 0.05;
 	float homingInstinct = 0.005;
+	float typeAvoidance = 0.5; 
 	//Larger = less force
 	float alignmentForce = 0.15;
 	float maxAcc = 0.1;

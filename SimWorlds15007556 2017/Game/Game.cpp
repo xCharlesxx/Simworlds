@@ -104,7 +104,6 @@ Game::Game(ID3D11Device* _pd3dDevice, HWND _hWnd, HINSTANCE _hInstance)
 	TwBar *myBar;
 	myBar = TwNewBar("Boid Settings");
 	TwWindowSize(width, height);
-
 	//add Boid manager
 	m_boidManager = new BoidManager("BirdModelV1.cmo", _pd3dDevice, m_fxFactory);
 	
