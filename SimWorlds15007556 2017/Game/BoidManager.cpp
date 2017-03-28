@@ -181,13 +181,14 @@ Vector3 BoidManager::Separation(int thisBoid, int type)
 				{
 					//Apply seperation force  -= (boid pos - thisBoid pos)   
 					seperationForce -= (loopBoid->GetPos() - currentBoid->GetPos());
+					//If not of my flock
+				if (loopBoid->getType() != currentBoid->getType())
+				{
+					//Amplify seperation force
+					seperationForce += seperationForce*typeAvoidance;
 				}
-				//If not of my flock
-				//if (loopBoid->getType() != currentBoid->getType())
-				//{
-				//	//Amplify seperation force
-				//	seperationForce += seperationForce*typeAvoidance;
-				//}
+				}
+				
 			}
 		}
 	}
