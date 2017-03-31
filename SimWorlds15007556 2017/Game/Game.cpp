@@ -91,7 +91,8 @@ Game::Game(ID3D11Device* _pd3dDevice, HWND _hWnd, HINSTANCE _hInstance)
 
 	//create a base light
 	//m_light = new Light(Vector3(0.0f, 100.0f, 160.0f), Color(1.0f, 1.0f, 1.0f, 1.0f), Color(1.0f, 1.0f, 1.0f, 1.0f));
-	m_light = new Light(Vector3(0.0f, 100.0f, 160.0f), Color(1.0f, 1.0f, 1.0f, 1.0f), Color(0.4f, 0.1f, 0.1f, 1.0f));
+	m_light = new Light(Vector3(0.0f, 100.0f, 160.0f), Color(1, 1, 1, 1), Color(1, 1, 1, 1));
+
 	m_GameObjects.push_back(m_light);
 
 	
@@ -320,6 +321,13 @@ void Game::PlayTick()
 	if ((m_keyboardState[DIK_R] & 0x80) && !(m_prevKeyboardState[DIK_R] & 0x80))
 	{
 		m_boidManager->RemoveBar(); 
+	}
+	if ((m_keyboardState[DIK_L] & 0x80) && !(m_prevKeyboardState[DIK_L] & 0x80))
+	{
+		if (m_light->GetAmbCol() == Color(0.4f, 0.1f, 0.1f, 1.0f))
+		m_light->SetAmbCol(Color(1, 1, 1, 1)); 
+		else
+		m_light->SetAmbCol(Color(0.4f, 0.1f, 0.1f, 1.0f));
 	}
 	if (m_GD->m_mouseState->lZ > 0.0f)
 	{

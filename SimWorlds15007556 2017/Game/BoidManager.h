@@ -17,7 +17,6 @@ public:
 
 	void Tick(GameData* _GD, DrawData* _DD);
 	void UpdateBoidPos(DrawData* _DD, GameData* _GD);
-	void InitialiseBoidPos(); 
 	void DrawBoids(DrawData* _DD);
 	bool SpawnBoid(int type);
 	bool KillBoid(int type); 
@@ -48,7 +47,8 @@ protected:
 	float percentCohesion = 0.1;
 	float seperationDistance = 0.05;
 	float homingInstinct = 0.005;
-	float typeAvoidance = 0.5; 
+	float typeSeperation = 0; 
+	float typeCohesion = 0; 
 	//Larger = less force
 	float alignmentForce = 0.15;
 	float maxAcc = 0.1;
