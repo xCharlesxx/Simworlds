@@ -24,8 +24,8 @@ BoidManager::BoidManager(string _fileName, ID3D11Device* _pd3dDevice, IEffectFac
 	}*/
 	//for (int i = 0; i < 1; i++)
 	//{
-	//	InvisibleObject* invObj = new InvisibleObject("Bust.cmo", m_pd3dDevice, m_fxFactory, Vector3::Zero, 0.0f, 4.7f, 0.0f, 0.25f * Vector3(100.0f));
-	//	m_invObj.push_back(invObj);
+		InvisibleObject* invObj = new InvisibleObject("Bust.cmo", m_pd3dDevice, m_fxFactory, Vector3::Zero, 0.0f, 4.7f, 0.0f, 0.25f * Vector3(100.0f));
+		m_invObj.push_back(invObj);
 	//}
 }
 
@@ -117,7 +117,7 @@ void BoidManager::Tick(GameData* _GD, DrawData* _DD)
 {	
 	//for (int i = 0; i < m_invObj.size(); ++i)
 	//{
-	//	m_invObj[i]->SetPos(Vector3(xPos, xPos, xPos));
+		m_invObj[0]->SetPos(Vector3(xPos, 0, 0));
 	//}
 
 	//apply my base behaviour
@@ -283,18 +283,14 @@ Vector3 BoidManager::Cohesion(int thisBoid, int type)
 
 Vector3 BoidManager::Homing(int thisBoid, int type)
 {
-	Vector3 home = Vector3(0, 0, 0); 
-		//m_invObj[type]->GetPos(); 
+	Vector3 home = m_invObj[0]->GetPos(); 
+		
 	//Always passively head home
-	return home - typeList[type]->m_boids[thisBoid]->GetPos() *  typeList[type]->m_boids[thisBoid]->getHoming();
+	return (home - typeList[type]->m_boids[thisBoid]->GetPos()) *  typeList[type]->m_boids[thisBoid]->getHoming();
 }
 
 void BoidManager::DrawBoids(DrawData* _DD)
 {
-	//for (int i = 0; i < m_invObj.size(); ++i)
-	//{
-	//	//m_invObj[i]->Draw(_DD);
-	//}
 	// Loop through all boids
 	for (int x = 0; x < typeList.size(); ++x)
 	{
@@ -318,6 +314,7 @@ void BoidManager::initTweakBar()
 	BS->colour = Vector4(RandomNumber(), RandomNumber(), RandomNumber(), 1);
 	TwAddVarRW(p_myBar, "Type Seperation", TW_TYPE_FLOAT, &typeSeperation, "min = 0    max = 1   step = 0.001");
 	TwAddVarRW(p_myBar, "Type Cohesion", TW_TYPE_FLOAT, &typeCohesion, "min = 0    max = 1   step = 0.001");
+	TwAddVarRW(p_myBar, "Home xPos    ", TW_TYPE_FLOAT, &xPos, "min = -100 max = 100   step = 10   group=Boids");
 	TwAddVarRW(p_myBar, ("Colour       " + prefix).c_str(),       TW_TYPE_COLOR4F,&BS->colour,              ("group=Boids" + prefix).c_str());
 	TwAddVarRW(p_myBar, ("Num Boids    " + prefix).c_str(),       TW_TYPE_INT32,  &BS->requestedSpecialBoid,("min = 0    max = " + std::to_string(boidPool) + "   step = 1   group=Boids" + prefix).c_str());
 	TwAddVarRW(p_myBar, ("Alignment    " + prefix).c_str(),       TW_TYPE_FLOAT,  &BS->alignmentForce,      ("min = 0    max = 1   step = 0.01   group=Boids" + prefix).c_str());
@@ -325,7 +322,7 @@ void BoidManager::initTweakBar()
 	TwAddVarRW(p_myBar, ("Seperation   " + prefix).c_str(),       TW_TYPE_FLOAT,  &BS->seperationDistance,  ("min = 0    max = 1   step = 0.01   group=Boids" + prefix).c_str());
 	TwAddVarRW(p_myBar, ("Homing       " + prefix).c_str(),       TW_TYPE_FLOAT,  &BS->homingInstinct,      ("min = 0    max = 1   step = 0.001  group=Boids" + prefix).c_str());
 	TwAddVarRW(p_myBar, ("Acceleration " + prefix).c_str(),       TW_TYPE_FLOAT,  &BS->maxAcc,              ("min = 0.01 max = 1   step = 0.01   group=Boids" + prefix).c_str()); 
-	//TwAddVarRW(p_myBar, ("Home xPos    " + prefix).c_str(), TW_TYPE_INT32, &xPos,       ("min = 0 max = 100   step = 1   group=Boids" + prefix).c_str());
+	
 	//TwAddVarRW(p_myBar, "HxPos",         TW_TYPE_COLOR3F, &xPos,               "min = 0    max = 100 step = 1      group=Object");
 	/*TwAddVarRW(p_myBar, "NameOfMyVariable", TW_TYPE_FLOAT, &alignmentForce, "");
 	TwAddVarRW(p_myBar, "NameOfMyVariable", TW_TYPE_FLOAT, &alignmentForce, "");
@@ -424,6 +421,9 @@ void BoidManager::DebugPrint()
 			cout << typeList[i]->colour.z;
 			cout << "\n";
 		}
+		cout << "xPos ";
+		cout << xPos;
+		cout << "\n";
 		cout << "Boids alive ";
 		cout << boidsAlive;
 		cout << "\nZero Boids ";

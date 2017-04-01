@@ -49,7 +49,6 @@ protected:
 	float homingInstinct = 0.005;
 	float typeSeperation = 0; 
 	float typeCohesion = 0; 
-	//Larger = less force
 	float alignmentForce = 0.15;
 	float maxAcc = 0.1;
 
