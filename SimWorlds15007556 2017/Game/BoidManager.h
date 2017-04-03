@@ -24,6 +24,7 @@ public:
 	void initTweakBar(); 
 	void RemoveBar(); 
 	void AdjustBoidCounts(); 
+	void Presets(); 
 	float RandomNumber(); 
 	Vector3 Separation(int thisBoid, int type);
 	Vector3 Alignment(int thisBoid, int type);
@@ -41,7 +42,8 @@ protected:
 	int boidsAlive = 0; 
 	int clanNum = 0; 
 	const int boidPool = 1000; 
-	int x = 0; 
+	//int x = 0; 
+	int preset = 8; 
 	float xPos = 0; 
 	bool homing = true;
 	float percentCohesion = 0.1;

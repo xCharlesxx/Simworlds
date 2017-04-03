@@ -231,7 +231,7 @@ Vector3 BoidManager::Cohesion(int thisBoid, int type)
 	Vector3 centerOfMass = Vector3::Zero; 
 	boidOfType currentBoid = typeList[type]->m_boids[thisBoid];
 	//Performance improvement
-	if (typeList[x]->percentCohesion != 0)
+	if (typeList[type]->percentCohesion != 0)
 	//loop thorough boid's own type
 	for (int i = 0; i < typeList[type]->m_boids.size(); ++i)
 	{
@@ -266,12 +266,12 @@ Vector3 BoidManager::Cohesion(int thisBoid, int type)
 			OtherTypeCenterOfMass = OtherTypeCenterOfMass / (boidsAlive - (typeList[type]->boidsOfType - 1));
 			centerOfMass = centerOfMass / (typeList[type]->boidsOfType - 1);;
 			//Move boids a percentage towards the center of all the boids
-			return ((centerOfMass - currentBoid->GetPos()) * percentCohesion) + (OtherTypeCenterOfMass * typeCohesion);
+			return (((centerOfMass - currentBoid->GetPos()) * percentCohesion) + (OtherTypeCenterOfMass * typeCohesion))/2;
 		}
 	}
 	//else
 	//Stop Dividing by Zero
-	if (typeList[x]->percentCohesion != 0)
+	if (typeList[type]->percentCohesion != 0)
 	if (typeList[type]->boidsOfType != 1)
 	{
 		centerOfMass = centerOfMass / (typeList[type]->boidsOfType - 1);
@@ -405,6 +405,85 @@ void BoidManager::AdjustBoidCounts()
 	}
 }
 
+void BoidManager::Presets()
+{
+	if (preset == 9)
+		preset = 0;
+	else
+		preset++;
+	int size = typeList.size(); 
+	for (int i = 0; i < size; i++)
+	{
+		RemoveBar(); 
+	}
+	switch (preset)
+	{
+	case 0:
+		for (int i = 0; i < 2; i++)
+		{
+			initTweakBar();
+			typeList[i]->requestedSpecialBoid = 250;
+			typeList[i]->colour = Vector4(i+1, i, 0, 1);
+			typeList[i]->homingInstinct = 0.005;
+			typeList[i]->maxAcc = 0.1;
+			typeList[i]->alignmentForce = 0.15;
+			typeList[i]->percentCohesion = 0.1;
+			typeList[i]->seperationDistance = 0.05;
+		}
+		break; 
+	case 1:
+		for (int i = 0; i < 3; i++)
+		{
+			initTweakBar();
+			typeList[i]->requestedSpecialBoid = 1000;
+			typeList[i]->colour = Vector4(1-i, i, -1+i, 1);
+			typeList[i]->homingInstinct = 0.3 + (i*0.3);
+			typeList[i]->maxAcc = 1;
+			typeList[i]->alignmentForce = 0;
+			typeList[i]->percentCohesion = 0;
+			typeList[i]->seperationDistance = 0;
+		}
+		break;
+	case 2:
+		for (int i = 0; i < 3; i++)
+		{
+			initTweakBar();
+			typeList[i]->requestedSpecialBoid = 1000;
+			typeList[i]->colour = Vector4(1 - i, i, -1 + i, 1);
+			typeList[i]->homingInstinct = 0.3 + (i*0.3);
+			typeList[i]->maxAcc = 0.3 + (i*0.3);
+			typeList[i]->alignmentForce = 0;
+			typeList[i]->percentCohesion = 0;
+			typeList[i]->seperationDistance = 0;
+		}
+		break;
+	case 3:
+		for (int i = 0; i < 10; i++)
+		{
+			initTweakBar();
+			typeList[i]->requestedSpecialBoid = 1000;
+			typeList[i]->colour = Vector4(RandomNumber(), RandomNumber(), RandomNumber(), 1);
+			typeList[i]->homingInstinct = 0.1 + (i*0.1);
+			typeList[i]->maxAcc = 1;
+			typeList[i]->alignmentForce = 0;
+			typeList[i]->percentCohesion = 0;
+			typeList[i]->seperationDistance = 0;
+		}
+		break;
+	case 4:
+		break;
+	case 5:
+		break;
+	case 6:
+		break;
+	case 7:
+		break;
+	case 8:
+		break;
+	case 9:
+		break;
+	}
+}
 void BoidManager::DebugPrint()
 {
 	if (once == false)

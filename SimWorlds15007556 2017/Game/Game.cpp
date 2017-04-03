@@ -291,14 +291,7 @@ void Game::PlayTick()
 	//upon space bar switch camera state
 	if ((m_keyboardState[DIK_SPACE] & 0x80) && !(m_prevKeyboardState[DIK_SPACE] & 0x80))
 	{
-		if (m_GD->m_GS == GS_PLAY_MAIN_CAM)
-		{
-			m_GD->m_GS = GS_PLAY_TPS_CAM;
-		}
-		else
-		{
-			m_GD->m_GS = GS_PLAY_MAIN_CAM;
-		}
+		m_boidManager->Presets(); 
 	}
 	//Lots of Boids
 	/*if ((m_keyboardState[DIK_L] & 0x80))

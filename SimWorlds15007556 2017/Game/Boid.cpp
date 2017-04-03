@@ -8,9 +8,9 @@
 
 Boid::Boid(ID3D11Device* _pd3dDevice, int type, std::vector<BoidSettings*> &_typeList):m_typelist(_typeList)
 {
-	int randx = rand() % 20 - 10;
-	int randy = rand() % 20 - 10;
-	int randz = rand() % 20 - 10;
+	int randx = rand() % 200 - 100;
+	int randy = rand() % 200 - 100;
+	int randz = rand() % 200 - 100;
 	m_pos = Vector3(randx, randy, randz);
 	velocity = Vector3::Zero;
 	int numVerts = 3;
@@ -23,9 +23,6 @@ Boid::Boid(ID3D11Device* _pd3dDevice, int type, std::vector<BoidSettings*> &_typ
 		indices[i] = i;
 		m_vertices[i].texCoord = Vector2::One;
 	}
-//	m_vertices[2].Color = Color(1.0f, 0.0f, 0.0f, 1.0f);
-//	m_vertices[1].Color = Color(1.0f, 0.0f, 0.0f, 1.0f);
-//	m_vertices[0].Color = Color(1.0f, 0.0f, 0.0f, 1.0f);
 	m_type = type; 
 	m_vertices[0].Pos = Vector3(0.0f, 0.0f, 0.0f);
 	m_vertices[1].Pos = Vector3(0.0f, 0.0f, 2.0f);
