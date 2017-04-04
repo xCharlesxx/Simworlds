@@ -158,13 +158,12 @@ Vector3 BoidManager::Separation(int thisBoid, int type)
 {
 	Vector3 seperationForce = Vector3::Zero;  
 	boidOfType currentBoid = typeList[type]->m_boids[thisBoid];
-	// Loop through all boids
-	for (int x = 0; x < typeList.size(); ++x)
+	//If type 1: seperate from all boids
+	if (type == 1 && typeSeperation != 0)
 	{
-		//Performance improvement
-		if (typeList[x]->seperationDistance != 0 || typeSeperation != 0)
+		for (int x = 0; x < typeList.size(); ++x)
 		{
-			//Get typelist
+				//Get typelist
 			for (int i = 0; i < typeList[x]->m_boids.size(); ++i)
 			{
 				boidOfType loopBoid = typeList[x]->m_boids[i];
@@ -178,7 +177,7 @@ Vector3 BoidManager::Separation(int thisBoid, int type)
 					if (loopBoid->getType() != currentBoid->getType())
 					{
 						//Use different seperation
-						if (distance < (typeSeperation * 100))
+						if (distance < (typeSeperation * 50))
 						{
 							seperationForce -= (loopBoid->GetPos() - currentBoid->GetPos());
 						}
@@ -192,7 +191,27 @@ Vector3 BoidManager::Separation(int thisBoid, int type)
 				}
 			}
 		}
+		return seperationForce;
 	}
+	// Type is not 1 or type seperation is turned off
+		if (typeList[type]->seperationDistance != 0)
+			for (int i = 0; i < typeList[type]->m_boids.size(); ++i)
+			{
+				boidOfType loopBoid = typeList[type]->m_boids[i];
+				//If boid != thisBoid && boid is alive 
+				if (loopBoid != currentBoid && loopBoid->getAlive() == true)
+				{
+					//Distance between boid and thisBoid
+					float distance = Vector3::Distance(loopBoid->GetPos(), currentBoid->GetPos());
+					cout << "Seperation Computation\n";
+					//else if distance is less than set seperation distance
+					if (distance < (currentBoid->getSeperation() * 10))
+					{
+						//Apply seperation force  -= (boid pos - thisBoid pos)   
+						seperationForce -= (loopBoid->GetPos() - currentBoid->GetPos());
+					}
+				}
+			}
 	return seperationForce;
 }
 
@@ -218,7 +237,7 @@ Vector3 BoidManager::Alignment(int thisBoid, int type)
 		if (typeList[type]->boidsOfType != 1)
 		{
 			//Divide accumilated velocity by number of boids of type
-			percievedVelocity = percievedVelocity / (typeList[type]->boidsOfType - 1);
+			percievedVelocity /= (typeList[type]->boidsOfType - 1);
 			return ((percievedVelocity - currentBoid->getVelocity()) * currentBoid->getAlignment());
 		}
 	}
@@ -230,53 +249,48 @@ Vector3 BoidManager::Cohesion(int thisBoid, int type)
 {
 	Vector3 centerOfMass = Vector3::Zero; 
 	boidOfType currentBoid = typeList[type]->m_boids[thisBoid];
-	//Performance improvement
-	if (typeList[type]->percentCohesion != 0)
-	//loop thorough boid's own type
-	for (int i = 0; i < typeList[type]->m_boids.size(); ++i)
+	// Type 0 chasing type 1 
+	if (typeCohesion != 0 && type == 0 && typeList.size() > 1)
 	{
-		boidOfType loopBoid = typeList[type]->m_boids[i];
-		//Do not include this boid in center of mass calculation
-		if (i != thisBoid && loopBoid->getAlive() == true)
+		// Make type 0 chase type 1
+		for (int i = 0; i < typeList[1]->m_boids.size(); ++i)
 		{
-			centerOfMass += loopBoid->GetPos();
-		}
-	}
-	//If there is Cohesion between types
-	if (typeCohesion != 0)
-	{
-		Vector3 OtherTypeCenterOfMass = Vector3::Zero; 
-		// Loop through all boids
-		for (int x = 0; x < typeList.size(); ++x)
-		{
-			//Get typelists that are not current type
-			if(typeList[x] != typeList[type])
-			for (int i = 0; i < typeList[x]->m_boids.size(); ++i)
+			boidOfType loopBoid = typeList[1]->m_boids[i];
+			if (loopBoid->getAlive() == true)
 			{
-				boidOfType loopBoid = typeList[x]->m_boids[i];
-				if (loopBoid->getAlive() == true)
-				{
-					//Add all boids apart from this boid to center of mass
-					OtherTypeCenterOfMass += loopBoid->GetPos();
-				}
+				//Add all boids apart from this boid to center of mass
+				centerOfMass += loopBoid->GetPos();
 			}
 		}
 		if (boidsAlive != 1)
 		{
-			OtherTypeCenterOfMass = OtherTypeCenterOfMass / (boidsAlive - (typeList[type]->boidsOfType - 1));
-			centerOfMass = centerOfMass / (typeList[type]->boidsOfType - 1);;
-			//Move boids a percentage towards the center of all the boids
-			return (((centerOfMass - currentBoid->GetPos()) * percentCohesion) + (OtherTypeCenterOfMass * typeCohesion))/2;
+			//centerOfMass = centerOfMass / (typeList[1]->boidsOfType);
+			centerOfMass /= (typeList[1]->boidsOfType);
+			//Move boids a percentage towards the center of type1
+			return (centerOfMass - currentBoid->GetPos()) * typeCohesion;
 		}
 	}
-	//else
-	//Stop Dividing by Zero
+	//Performance improvement
 	if (typeList[type]->percentCohesion != 0)
-	if (typeList[type]->boidsOfType != 1)
 	{
-		centerOfMass = centerOfMass / (typeList[type]->boidsOfType - 1);
-		//Move boids a percentage towards the center of the group
-		return (centerOfMass - currentBoid->GetPos()) * currentBoid->getCohesion();
+		//loop thorough boid's own type
+		for (int i = 0; i < typeList[type]->m_boids.size(); ++i)
+		{
+			boidOfType loopBoid = typeList[type]->m_boids[i];
+			//Do not include this boid in center of mass calculation
+			if (i != thisBoid && loopBoid->getAlive() == true)
+			{
+				centerOfMass += loopBoid->GetPos();
+					//*(typeList[type]->percentCohesion));
+			}
+		}
+		//Stop Dividing by Zero
+		if (typeList[type]->boidsOfType != 1)
+		{
+			centerOfMass /= (typeList[type]->boidsOfType - 1);
+			//Move boids a percentage towards the center of the group
+			return (centerOfMass - currentBoid->GetPos()) * typeList[type]->percentCohesion;
+		}
 	}
 	return Vector3::Zero; 
 }
@@ -314,7 +328,7 @@ void BoidManager::initTweakBar()
 	BS->colour = Vector4(RandomNumber(), RandomNumber(), RandomNumber(), 1);
 	TwAddVarRW(p_myBar, "Type Seperation", TW_TYPE_FLOAT, &typeSeperation, "min = 0    max = 1   step = 0.001");
 	TwAddVarRW(p_myBar, "Type Cohesion", TW_TYPE_FLOAT, &typeCohesion, "min = 0    max = 1   step = 0.001");
-	TwAddVarRW(p_myBar, "Home xPos    ", TW_TYPE_FLOAT, &xPos, "min = -100 max = 100   step = 10   group=Boids");
+	TwAddVarRW(p_myBar, "Home xPos    ", TW_TYPE_FLOAT, &xPos, "min = -100 max = 100   step = 10");
 	TwAddVarRW(p_myBar, ("Colour       " + prefix).c_str(),       TW_TYPE_COLOR4F,&BS->colour,              ("group=Boids" + prefix).c_str());
 	TwAddVarRW(p_myBar, ("Num Boids    " + prefix).c_str(),       TW_TYPE_INT32,  &BS->requestedSpecialBoid,("min = 0    max = " + std::to_string(boidPool) + "   step = 1   group=Boids" + prefix).c_str());
 	TwAddVarRW(p_myBar, ("Alignment    " + prefix).c_str(),       TW_TYPE_FLOAT,  &BS->alignmentForce,      ("min = 0    max = 1   step = 0.01   group=Boids" + prefix).c_str());
@@ -362,7 +376,7 @@ void BoidManager::RemoveBar()
 		TwRemoveVar(p_myBar, ("Seperation   " + prefix).c_str());
 		TwRemoveVar(p_myBar, ("Homing       " + prefix).c_str());
 		TwRemoveVar(p_myBar, ("Acceleration " + prefix).c_str());
-		typeList.pop_back(); 
+		typeList.pop_back();
 		for (int i = 0; i < boidPool; i++)
 		{
 			KillBoid(clanNum); 
@@ -416,6 +430,8 @@ void BoidManager::Presets()
 	{
 		RemoveBar(); 
 	}
+	typeCohesion = 0;
+	typeSeperation = 0; 
 	switch (preset)
 	{
 	case 0:
@@ -423,7 +439,7 @@ void BoidManager::Presets()
 		{
 			initTweakBar();
 			typeList[i]->requestedSpecialBoid = 250;
-			typeList[i]->colour = Vector4(i+1, i, 0, 1);
+			typeList[i]->colour = Vector4(1, i, 0, 1);
 			typeList[i]->homingInstinct = 0.005;
 			typeList[i]->maxAcc = 0.1;
 			typeList[i]->alignmentForce = 0.15;
@@ -432,11 +448,65 @@ void BoidManager::Presets()
 		}
 		break; 
 	case 1:
+		typeCohesion = 0.02; 
+		initTweakBar();
+		typeList[0]->requestedSpecialBoid = 250;
+		typeList[0]->colour = Vector4(1, 0, 0, 1);
+		typeList[0]->homingInstinct = 0;
+		typeList[0]->maxAcc = 0.24;
+		typeList[0]->alignmentForce = 0.15;
+		typeList[0]->percentCohesion = 0.1;
+		typeList[0]->seperationDistance = 0.2;
+		initTweakBar();
+		typeList[1]->requestedSpecialBoid = 1;
+		typeList[1]->colour = Vector4(1, 1, 0, 1);
+		typeList[1]->homingInstinct = 0.35;
+		typeList[1]->maxAcc = 0.1;
+		typeList[1]->alignmentForce = 0;
+		typeList[1]->percentCohesion = 0;
+		typeList[1]->seperationDistance = 0;
+		break;
+	case 2:
+		typeSeperation = 0.6; 
+		initTweakBar();
+		typeList[0]->requestedSpecialBoid = 1;
+		typeList[0]->colour = Vector4(1, 0, 0, 1);
+		typeList[0]->homingInstinct = 1;
+		typeList[0]->maxAcc = 0.1;
+		typeList[0]->alignmentForce = 0;
+		typeList[0]->percentCohesion = 0;
+		typeList[0]->seperationDistance = 0;
+		initTweakBar();
+		typeList[1]->requestedSpecialBoid = 250;
+		typeList[1]->colour = Vector4(1, 1, 0, 1);
+		typeList[1]->homingInstinct = 0.4;
+		typeList[1]->maxAcc = 1;
+		typeList[1]->alignmentForce = 0.1;
+		typeList[1]->percentCohesion = 0.2;
+		typeList[1]->seperationDistance = 0.17;
+		break;
+	case 3:
+		initTweakBar();
+		typeList[0]->requestedSpecialBoid = 400;
+		typeList[0]->colour = Vector4(1, 1, 1, 1);
+		typeList[0]->homingInstinct = 0.001;
+		typeList[0]->maxAcc = 0.1;
+		typeList[0]->alignmentForce = 0.12;
+		typeList[0]->percentCohesion = 0.01;
+		typeList[0]->seperationDistance = 0.1;
+		break;
+	case 4:
+		break;
+	case 5:
+		break;
+	case 6:
+		break;
+	case 7:
 		for (int i = 0; i < 3; i++)
 		{
 			initTweakBar();
 			typeList[i]->requestedSpecialBoid = 1000;
-			typeList[i]->colour = Vector4(1-i, i, -1+i, 1);
+			typeList[i]->colour = Vector4(1 - i, i, -1 + i, 1);
 			typeList[i]->homingInstinct = 0.3 + (i*0.3);
 			typeList[i]->maxAcc = 1;
 			typeList[i]->alignmentForce = 0;
@@ -444,7 +514,7 @@ void BoidManager::Presets()
 			typeList[i]->seperationDistance = 0;
 		}
 		break;
-	case 2:
+	case 8:
 		for (int i = 0; i < 3; i++)
 		{
 			initTweakBar();
@@ -457,7 +527,7 @@ void BoidManager::Presets()
 			typeList[i]->seperationDistance = 0;
 		}
 		break;
-	case 3:
+	case 9:
 		for (int i = 0; i < 10; i++)
 		{
 			initTweakBar();
@@ -469,18 +539,6 @@ void BoidManager::Presets()
 			typeList[i]->percentCohesion = 0;
 			typeList[i]->seperationDistance = 0;
 		}
-		break;
-	case 4:
-		break;
-	case 5:
-		break;
-	case 6:
-		break;
-	case 7:
-		break;
-	case 8:
-		break;
-	case 9:
 		break;
 	}
 }

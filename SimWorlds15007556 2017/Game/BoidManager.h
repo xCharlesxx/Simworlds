@@ -43,15 +43,14 @@ protected:
 	int clanNum = 0; 
 	const int boidPool = 1000; 
 	//int x = 0; 
-	int preset = 8; 
+	int preset = 9; 
 	float xPos = 0; 
 	bool homing = true;
-	float percentCohesion = 0.1;
-	float seperationDistance = 0.05;
-	float homingInstinct = 0.005;
+	float initPercentCohesion = 0.1;
+	float initSeperationDistance = 0.05;
+	float initHomingInstinct = 0.005;
+	float initAlignmentForce = 0.15;
+	float initMaxAcc = 0.1;
 	float typeSeperation = 0; 
 	float typeCohesion = 0; 
-	float alignmentForce = 0.15;
-	float maxAcc = 0.1;
-
 };
