@@ -47,10 +47,10 @@ protected:
 	float xPos = 0; 
 	bool homing = true;
 	float initPercentCohesion = 0.1;
-	float initSeperationDistance = 0.05;
+	float initSeparationDistance = 0.05;
 	float initHomingInstinct = 0.005;
 	float initAlignmentForce = 0.15;
 	float initMaxAcc = 0.1;
-	float typeSeperation = 0; 
+	float typeSeparation = 0; 
 	float typeCohesion = 0; 
 };

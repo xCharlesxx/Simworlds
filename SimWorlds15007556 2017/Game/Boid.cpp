@@ -50,8 +50,6 @@ Boid::Boid(ID3D11Device* _pd3dDevice, int type, std::vector<BoidSettings*> &_typ
 	
 	BuildIB(_pd3dDevice, indices);
 	BuildVB(_pd3dDevice, numVerts, m_vertices);
-	delete[] indices;    //this is no longer needed as this is now in the index Buffer
-	delete[] m_vertices; //this is no longer needed as this is now in the Vertex Buffer
 	m_vertices = nullptr;
 }
 
@@ -76,24 +74,14 @@ void Boid::Draw(DrawData * _DD)
 	VBGO::Draw(_DD);
 }
 
-bool Boid::getAlive()
-{
-	return isAlive;
-}
-
 Vector3 Boid::getVelocity()
 {
 	return velocity; 
 }
 
-void Boid::setAlive(bool alive)
+float Boid::getSeparation()
 {
-	isAlive = alive; 
-}
-
-float Boid::getSeperation()
-{
-	return m_typelist[m_type]->seperationDistance; 
+	return m_typelist[m_type]->separationDistance; 
 }
 
 float Boid::getCohesion()

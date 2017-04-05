@@ -17,21 +17,17 @@ public:
 	~Boid();
 	void Update(GameData* _GD, Vector3 m_force);
 	virtual void Draw(DrawData* _DD) override;
-	bool getAlive(); 
 	Vector3 getVelocity(); 
-	void setAlive(bool alive); 
 	void outputBoidPos(); 
-	float getSeperation();
+	float getSeparation();
 	float getCohesion();
 	float getAlignment();
 	float getHoming();
 	float getAcc(); 
 	int getType(); 
 protected:
-	int m_size;
 	int m_type = 0; 
 	Vector3 velocity; 
 	myVertex* m_vertices;
-	bool isAlive = true; 
 	std::vector<BoidSettings*>& m_typelist;
 };
