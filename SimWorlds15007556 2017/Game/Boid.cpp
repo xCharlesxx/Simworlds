@@ -8,13 +8,14 @@
 
 Boid::Boid(ID3D11Device* _pd3dDevice, int type, std::vector<BoidSettings*> &_typeList):m_typelist(_typeList)
 {
+	//Initialise boid at a random position
 	int randx = rand() % 200 - 100;
 	int randy = rand() % 200 - 100;
 	int randz = rand() % 200 - 100;
 	m_pos = Vector3(randx, randy, randz);
 	velocity = Vector3::Zero;
+	//Calculate Verticies
 	int numVerts = 3;
-	int vert = 0; 
 	m_numPrims = numVerts / 3;
 	m_vertices = new myVertex[numVerts];
 	WORD* indices = new WORD[numVerts];
@@ -30,6 +31,7 @@ Boid::Boid(ID3D11Device* _pd3dDevice, int type, std::vector<BoidSettings*> &_typ
 	m_vertices[0].Color = Color(m_typelist[m_type]->colour);
 	m_vertices[1].Color = Color(m_typelist[m_type]->colour);
 	m_vertices[2].Color = Color(m_typelist[m_type]->colour);
+	//Calculate Primitives
 	for (int i = 0; i< m_numPrims; i++)
 	{
 		WORD V1 = 3 * i;
@@ -47,7 +49,7 @@ Boid::Boid(ID3D11Device* _pd3dDevice, int type, std::vector<BoidSettings*> &_typ
 		m_vertices[V2].Norm = norm;
 		m_vertices[V3].Norm = norm;
 	}
-	
+	//Build VBGO
 	BuildIB(_pd3dDevice, indices);
 	BuildVB(_pd3dDevice, numVerts, m_vertices);
 	m_vertices = nullptr;
@@ -60,9 +62,13 @@ Boid::~Boid()
 
 void Boid::Update(GameData* _GD, Vector3 m_force)
 {
+	//Apply Velocity to current velocity
 	velocity = velocity + m_force;
+	//Normalize 
 	velocity.Normalize(); 
+	//Apply Velocity to position
 	m_pos = m_pos + velocity;
+	//Apply correct rotation
 	m_rotMat = Matrix::CreateWorld(m_pos, velocity, Vector3::Up); 
 	Matrix  scaleMat = Matrix::CreateScale(m_scale);
 	Matrix  transMat = Matrix::CreateTranslation(m_pos);
@@ -109,9 +115,9 @@ int Boid::getType()
 	return m_type;
 }
 
-
 void Boid::outputBoidPos()
 {
+	//Debugging
 	std::cout << "The Coordinates for this boid is: (";
 	std::cout << this->m_pos.x;
 	std::cout << ", ";

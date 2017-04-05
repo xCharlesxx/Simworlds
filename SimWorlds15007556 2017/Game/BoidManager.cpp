@@ -163,7 +163,6 @@ Vector3 BoidManager::Separation(int thisBoid, int type)
 				{
 					//Distance between boid and thisBoid
 					float distance = Vector3::Distance(loopBoid->GetPos(), currentBoid->GetPos());
-					cout << "Separation Computation\n";
 					//If not of my flock
 					if (loopBoid->getType() != currentBoid->getType())
 					{
@@ -194,7 +193,6 @@ Vector3 BoidManager::Separation(int thisBoid, int type)
 				{
 					//Distance between boid and thisBoid
 					float distance = Vector3::Distance(loopBoid->GetPos(), currentBoid->GetPos());
-					cout << "Separation Computation\n";
 					//else if distance is less than set separation distance
 					if (distance < (currentBoid->getSeparation() * 10))
 					{
@@ -221,7 +219,6 @@ Vector3 BoidManager::Alignment(int thisBoid, int type)
 			if (i != thisBoid)
 			{
 				percievedVelocity = percievedVelocity + loopBoid->getVelocity();
-				cout << "Alignment Computation"; 
 			}
 		}
 		//If there is more than one boid in type
@@ -286,7 +283,6 @@ Vector3 BoidManager::Cohesion(int thisBoid, int type)
 Vector3 BoidManager::Homing(int thisBoid, int type)
 {
 	Vector3 home = m_invObj[0]->GetPos(); 
-		
 	//Always passively head home
 	return (home - typeList[type]->m_boids[thisBoid]->GetPos()) *  typeList[type]->m_boids[thisBoid]->getHoming();
 }
@@ -321,11 +317,7 @@ void BoidManager::initTweakBar()
 	TwAddVarRW(p_myBar, ("Separation   " + prefix).c_str(),       TW_TYPE_FLOAT,  &BS->separationDistance,  ("min = 0    max = 1   step = 0.01   group=Boids" + prefix).c_str());
 	TwAddVarRW(p_myBar, ("Homing       " + prefix).c_str(),       TW_TYPE_FLOAT,  &BS->homingInstinct,      ("min = 0    max = 1   step = 0.001  group=Boids" + prefix).c_str());
 	TwAddVarRW(p_myBar, ("Acceleration " + prefix).c_str(),       TW_TYPE_FLOAT,  &BS->maxAcc,              ("min = 0.01 max = 1   step = 0.01   group=Boids" + prefix).c_str()); 
-	
-	//TwAddVarRW(p_myBar, "HxPos",         TW_TYPE_COLOR3F, &xPos,               "min = 0    max = 100 step = 1      group=Object");
-	/*TwAddVarRW(p_myBar, "NameOfMyVariable", TW_TYPE_FLOAT, &alignmentForce, "");
-	TwAddVarRW(p_myBar, "NameOfMyVariable", TW_TYPE_FLOAT, &alignmentForce, "");
-	TwAddVarRW(p_myBar, "NameOfMyVariable", TW_TYPE_FLOAT, &alignmentForce, "");*/
+
 	clanNum++; 	
 	BS->m_boids.reserve(boidPool);
 	typeList.push_back(BS); 
@@ -404,6 +396,7 @@ void BoidManager::AdjustBoidCounts()
 
 void BoidManager::Presets()
 {
+	//Allow user to cycle through presets when space is pressed
 	if (preset == 9)
 		preset = 0;
 	else
@@ -415,52 +408,49 @@ void BoidManager::Presets()
 	}
 	typeCohesion = 0;
 	typeSeparation = 0; 
+	homing = true; 
 	switch (preset)
 	{
+		//Flocks
 	case 0:
 		for (int i = 0; i < 2; i++)
 		{
 			initTweakBar();
-			typeList[i]->requestedSpecialBoid = 250;
+			typeList[i]->requestedSpecialBoid = 750;
 			typeList[i]->colour = Vector4(1, i, 0, 1);
-			typeList[i]->homingInstinct = 0.005;
-			typeList[i]->maxAcc = 0.1;
-			typeList[i]->alignmentForce = 0.15;
-			typeList[i]->percentCohesion = 0.1;
-			typeList[i]->separationDistance = 0.05;
+			typeList[i]->homingInstinct = 0.001; 
+			typeSeparation = 0.01; 
 		}
 		break; 
+		//Chasing leader boid
 	case 1:
 		typeCohesion = 0.02; 
 		initTweakBar();
-		typeList[0]->requestedSpecialBoid = 250;
+		typeList[0]->requestedSpecialBoid = 500;
 		typeList[0]->colour = Vector4(1, 0, 0, 1);
 		typeList[0]->homingInstinct = 0;
 		typeList[0]->maxAcc = 0.24;
-		typeList[0]->alignmentForce = 0.15;
-		typeList[0]->percentCohesion = 0.1;
 		typeList[0]->separationDistance = 0.2;
 		initTweakBar();
 		typeList[1]->requestedSpecialBoid = 1;
 		typeList[1]->colour = Vector4(1, 1, 0, 1);
 		typeList[1]->homingInstinct = 0.35;
-		typeList[1]->maxAcc = 0.1;
 		typeList[1]->alignmentForce = 0;
 		typeList[1]->percentCohesion = 0;
 		typeList[1]->separationDistance = 0;
 		break;
+		//Avoiding predator 
 	case 2:
 		typeSeparation = 0.6; 
 		initTweakBar();
 		typeList[0]->requestedSpecialBoid = 1;
 		typeList[0]->colour = Vector4(1, 0, 0, 1);
 		typeList[0]->homingInstinct = 1;
-		typeList[0]->maxAcc = 0.1;
 		typeList[0]->alignmentForce = 0;
 		typeList[0]->percentCohesion = 0;
 		typeList[0]->separationDistance = 0;
 		initTweakBar();
-		typeList[1]->requestedSpecialBoid = 250;
+		typeList[1]->requestedSpecialBoid = 500;
 		typeList[1]->colour = Vector4(1, 1, 0, 1);
 		typeList[1]->homingInstinct = 0.4;
 		typeList[1]->maxAcc = 1;
@@ -468,22 +458,31 @@ void BoidManager::Presets()
 		typeList[1]->percentCohesion = 0.2;
 		typeList[1]->separationDistance = 0.17;
 		break;
+		//Classic Boids
 	case 3:
 		initTweakBar();
-		typeList[0]->requestedSpecialBoid = 400;
+		typeList[0]->requestedSpecialBoid = 800;
 		typeList[0]->colour = Vector4(1, 1, 1, 1);
 		typeList[0]->homingInstinct = 0.001;
-		typeList[0]->maxAcc = 0.1;
 		typeList[0]->alignmentForce = 0.12;
 		typeList[0]->percentCohesion = 0.01;
 		typeList[0]->separationDistance = 0.1;
 		break;
+		//Swarms
 	case 4:
+		initTweakBar(); 
+		for (int i = 0; i < 2; i++)
+		{
+			initTweakBar();
+			typeList[i]->requestedSpecialBoid = 250 - (i*-100);
+			typeList[i]->colour = Vector4(1 - (i * 1), 1 - (i * 1), 0, 1);
+		}
 		break;
 	case 5:
 		break;
 	case 6:
 		break;
+		//Particle simulation 1
 	case 7:
 		for (int i = 0; i < 3; i++)
 		{
@@ -497,8 +496,9 @@ void BoidManager::Presets()
 			typeList[i]->separationDistance = 0;
 		}
 		break;
+		//Particle simulation 2
 	case 8:
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < 6; i++)
 		{
 			initTweakBar();
 			typeList[i]->requestedSpecialBoid = 1000;
@@ -510,13 +510,14 @@ void BoidManager::Presets()
 			typeList[i]->separationDistance = 0;
 		}
 		break;
+		//Max number of boids particle simulation
 	case 9:
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 50; i++)
 		{
 			initTweakBar();
 			typeList[i]->requestedSpecialBoid = 1000;
 			typeList[i]->colour = Vector4(RandomNumber(), RandomNumber(), RandomNumber(), 1);
-			typeList[i]->homingInstinct = 0.1 + (i*0.1);
+			typeList[i]->homingInstinct = 0.1 + (i*0.02);
 			typeList[i]->maxAcc = 1;
 			typeList[i]->alignmentForce = 0;
 			typeList[i]->percentCohesion = 0;

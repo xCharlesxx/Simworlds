@@ -298,7 +298,7 @@ void Game::PlayTick()
 	{
 		m_boidManager->SpawnBoid();
 	}*/
-	//Single Boid
+	//Debug Information
 	if ((m_keyboardState[DIK_B] & 0x80) && !(m_prevKeyboardState[DIK_B] & 0x80))
 	{	
 		m_boidManager->once = false;

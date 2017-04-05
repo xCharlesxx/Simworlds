@@ -42,7 +42,6 @@ protected:
 	int boidsAlive = 0; 
 	int clanNum = 0; 
 	const int boidPool = 1000; 
-	//int x = 0; 
 	int preset = 9; 
 	float xPos = 0; 
 	bool homing = true;
