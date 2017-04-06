@@ -307,8 +307,8 @@ void BoidManager::initTweakBar()
 	string prefix = std::to_string(clanNum);
 	BoidSettings* BS = new BoidSettings();
 	BS->colour = Vector4(RandomNumber(), RandomNumber(), RandomNumber(), 1);
-	TwAddVarRW(p_myBar, "Type separation", TW_TYPE_FLOAT, &typeSeparation, "min = 0    max = 1   step = 0.001");
-	TwAddVarRW(p_myBar, "Type Cohesion", TW_TYPE_FLOAT, &typeCohesion, "min = 0    max = 1   step = 0.001");
+	TwAddVarRW(p_myBar, "Type separation", TW_TYPE_FLOAT, &typeSeparation, "min = 0    max = 1   step = 0.001 group=Boids1");
+	TwAddVarRW(p_myBar, "Type Cohesion", TW_TYPE_FLOAT, &typeCohesion, "min = 0    max = 1   step = 0.001 group=Boids0");
 	TwAddVarRW(p_myBar, "Home xPos    ", TW_TYPE_FLOAT, &xPos, "min = -100 max = 100   step = 10");
 	TwAddVarRW(p_myBar, ("Colour       " + prefix).c_str(),       TW_TYPE_COLOR4F,&BS->colour,              ("group=Boids" + prefix).c_str());
 	TwAddVarRW(p_myBar, ("Num Boids    " + prefix).c_str(),       TW_TYPE_INT32,  &BS->requestedSpecialBoid,("min = 0    max = " + std::to_string(boidPool) + "   step = 1   group=Boids" + prefix).c_str());
