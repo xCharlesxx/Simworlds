@@ -288,16 +288,10 @@ bool Game::Tick()
 
 void Game::PlayTick()
 {
-	//upon space bar switch camera state
 	if ((m_keyboardState[DIK_SPACE] & 0x80) && !(m_prevKeyboardState[DIK_SPACE] & 0x80))
 	{
 		m_boidManager->Presets(); 
 	}
-	//Lots of Boids
-	/*if ((m_keyboardState[DIK_L] & 0x80))
-	{
-		m_boidManager->SpawnBoid();
-	}*/
 	//Debug Information
 	if ((m_keyboardState[DIK_B] & 0x80) && !(m_prevKeyboardState[DIK_B] & 0x80))
 	{	

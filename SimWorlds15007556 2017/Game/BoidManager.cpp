@@ -17,16 +17,8 @@ BoidManager::BoidManager(string _fileName, ID3D11Device* _pd3dDevice, IEffectFac
 	m_pd3dDevice = _pd3dDevice; 
 	m_fileName = _fileName; 
 	initTweakBar();
-	/*for (int i = 0; i < boidPool; i++)
-	{
-		Boid* boid = new Boid(m_pd3dDevice, typeList);
-		m_boids.push_back(boid);
-	}*/
-	//for (int i = 0; i < 1; i++)
-	//{
-		InvisibleObject* invObj = new InvisibleObject("Bust.cmo", m_pd3dDevice, m_fxFactory, Vector3::Zero, 0.0f, 4.7f, 0.0f, 0.25f * Vector3(100.0f));
-		m_invObj.push_back(invObj);
-	//}
+	InvisibleObject* invObj = new InvisibleObject("Bust.cmo", m_pd3dDevice, m_fxFactory, Vector3::Zero, 0.0f, 4.7f, 0.0f, 0.25f * Vector3(100.0f));
+	m_invObj.push_back(invObj);
 }
 
 BoidManager::~BoidManager()
@@ -43,22 +35,6 @@ bool BoidManager::SpawnBoid(int type)
 	cout << type;
 	cout << "\n";
 	return true; 
-		/*if (m_boids[i]->getAlive() == false)
-		{
-			m_boids[i]->setAlive(true);  
-			m_boids[i]->setType(type);
-			boidsAlive++;
-			cout << "Updating ";
-			cout << boidsAlive;
-			cout << " boids\n";
-			cout << "Of Type ";
-			cout << type; 
-			cout << "\n"; 
-			m_boids[i]->outputBoidPos(); 
-			return true; 
-		}*/
-	//}
-	return false; 
 }
 
 bool BoidManager::KillBoid(int type)
@@ -77,19 +53,6 @@ bool BoidManager::KillBoid(int type)
 			return true;
 			it++;
 	}
-	//for (int i = 0; i < boidPool; i++)
-	//{
-	//	if (m_boids[i]->getType() == type)
-	//	{			
-	//		m_boids[i]->setAlive(false);
-	//		boidsAlive--;
-	//      cout << "Boid Destroyed of type ";
-	//		cout << type;
-	//		cout << "\n";
-	//		//m_boids[i]->outputBoidPos();
-	//		return true;
-	//	}
-	//}
 	return false; 
 }
 
@@ -109,10 +72,7 @@ void BoidManager::ToggleHoming()
 
 void BoidManager::Tick(GameData* _GD, DrawData* _DD)
 {	
-	//for (int i = 0; i < m_invObj.size(); ++i)
-	//{
-		m_invObj[0]->SetPos(Vector3(xPos, 0, 0));
-	//}
+	m_invObj[0]->SetPos(Vector3(xPos, 0, 0));
 
 	//apply my base behaviour
 	AdjustBoidCounts();
@@ -307,9 +267,9 @@ void BoidManager::initTweakBar()
 	string prefix = std::to_string(clanNum);
 	BoidSettings* BS = new BoidSettings();
 	BS->colour = Vector4(RandomNumber(), RandomNumber(), RandomNumber(), 1);
+	TwAddVarRW(p_myBar, "Home xPos    ", TW_TYPE_FLOAT, &xPos, "min = -100 max = 100 step = 10");
 	TwAddVarRW(p_myBar, "Type separation", TW_TYPE_FLOAT, &typeSeparation, "min = 0    max = 1   step = 0.001 group=Boids1");
 	TwAddVarRW(p_myBar, "Type Cohesion", TW_TYPE_FLOAT, &typeCohesion, "min = 0    max = 1   step = 0.001 group=Boids0");
-	TwAddVarRW(p_myBar, "Home xPos    ", TW_TYPE_FLOAT, &xPos, "min = -100 max = 100   step = 10");
 	TwAddVarRW(p_myBar, ("Colour       " + prefix).c_str(),       TW_TYPE_COLOR4F,&BS->colour,              ("group=Boids" + prefix).c_str());
 	TwAddVarRW(p_myBar, ("Num Boids    " + prefix).c_str(),       TW_TYPE_INT32,  &BS->requestedSpecialBoid,("min = 0    max = " + std::to_string(boidPool) + "   step = 1   group=Boids" + prefix).c_str());
 	TwAddVarRW(p_myBar, ("Alignment    " + prefix).c_str(),       TW_TYPE_FLOAT,  &BS->alignmentForce,      ("min = 0    max = 1   step = 0.01   group=Boids" + prefix).c_str());
@@ -478,12 +438,8 @@ void BoidManager::Presets()
 			typeList[i]->colour = Vector4(1 - (i * 1), 1 - (i * 1), 0, 1);
 		}
 		break;
-	case 5:
-		break;
-	case 6:
-		break;
 		//Particle simulation 1
-	case 7:
+	case 5:
 		for (int i = 0; i < 3; i++)
 		{
 			initTweakBar();
@@ -497,7 +453,7 @@ void BoidManager::Presets()
 		}
 		break;
 		//Particle simulation 2
-	case 8:
+	case 6:
 		for (int i = 0; i < 6; i++)
 		{
 			initTweakBar();
@@ -511,7 +467,7 @@ void BoidManager::Presets()
 		}
 		break;
 		//Max number of boids particle simulation
-	case 9:
+	case 7:
 		for (int i = 0; i < 50; i++)
 		{
 			initTweakBar();
